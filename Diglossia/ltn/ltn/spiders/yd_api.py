@@ -32,7 +32,7 @@ class MeishijieSpider(Spider):
     }
 
     def start_requests(self):
-        with codecs.open('D:\My Package\My project\SogouTrans\Diglossia\TransAPI\\req\source\\tourism1600.jp', 'r',
+        with codecs.open('/search/chenguang/meng/SogouTrans/Diglossia/TransAPI/req/source\\tourism1600.jp', 'r',
                          'utf-8') as f:
             for l in f:
                 url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
