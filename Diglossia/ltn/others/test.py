@@ -1,5 +1,5 @@
 import pymysql
-from ltn import set_adsl
+from Diglossia.ltn import set_adsl
 
 # set_adsl.set_interface(sys.argv[1])
 set_adsl.set_interface('10.146.252.112')
