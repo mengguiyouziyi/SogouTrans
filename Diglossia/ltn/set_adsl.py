@@ -25,6 +25,7 @@ def set_interface(ip):
 
     def bind_socket(*arg1, **arg2):
         sock = true_socket(*arg1, **arg2)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind((ip, 0))
         return sock
 
