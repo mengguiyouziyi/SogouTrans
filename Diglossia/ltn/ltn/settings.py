@@ -129,7 +129,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'ltn.pipelines.MysqlPipeline': 999,
+    # 'ltn.pipelines.MysqlPipeline': 999,
     # 'ltn.pipelines.DuplicatesPipeline': 111,
 }
 
