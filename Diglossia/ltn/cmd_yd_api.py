@@ -11,5 +11,5 @@ if __name__ == '__main__':
     import set_adsl
 
     # set_adsl.set_interface(sys.argv[1])
-    set_adsl.set_interface('10.152.97.80')
+    set_adsl.set_interface('222.129.1.182')
     execute(['scrapy', 'crawl', file])
