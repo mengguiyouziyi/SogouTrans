@@ -15,7 +15,7 @@ def test_interface():
         ret_ip = html.rstrip()
         print("return ip=%s" % (ret_ip))
     except Exception as FF:
-        print >> sys.stderr, "Test interface error, exit ... \n"
+        print("Test interface error, exit ... \n")
         sys.exit(1)
 
 
