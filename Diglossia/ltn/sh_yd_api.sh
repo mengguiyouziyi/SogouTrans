@@ -11,6 +11,6 @@ fi
 
 for ip in $nips; do
     echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    python ./cmd_yd_api.py $ip
+    python ./set_adsl.py $ip
 done
 
