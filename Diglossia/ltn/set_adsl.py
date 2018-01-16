@@ -29,7 +29,7 @@ def set_interface(ip):
         return sock
 
     socket.socket = bind_socket
-    print("vitual ip: %s" % (ip))
+    print("virtual ip: %s" % (ip))
     test_interface()
 
 
