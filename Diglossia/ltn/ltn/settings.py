@@ -148,3 +148,6 @@ REDIS_CLUSTER_NODES = [
     {"host": "10.142.97.92", "port": "7004"},
     {"host": "10.142.97.92", "port": "7005"}
 ]
+
+TELNETCONSOLE_ENABLED = False
+
