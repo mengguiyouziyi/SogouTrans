@@ -19,10 +19,10 @@ NEWSPIDER_MODULE = 'ltn.spiders'
 #################################################
 ################ scrapy-redis ###################
 # Enables scheduling storing requests queue in redis.
-SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+# SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 
 # Ensure all spiders share same duplicates filter through redis.
-DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+# DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 
 # ITEM_PIPELINES = {
 #     'scrapy_redis.pipelines.RedisPipeline': 300

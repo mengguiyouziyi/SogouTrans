@@ -12,3 +12,8 @@ class LtnItem(scrapy.Item):
     url = scrapy.Field()
     title = scrapy.Field()
     text = scrapy.Field()
+
+
+class YdApiItem(scrapy.Item):
+    trans = scrapy.Field()
+    sours = scrapy.Field()

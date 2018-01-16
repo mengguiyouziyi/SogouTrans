@@ -19,8 +19,8 @@ import pymysql
 
 class MysqlPipeline(object):
     def __init__(self, crawler):
-        if crawler.spider.name in ['ltn']:
-            self.tab = 'ltn'
+        if crawler.spider.name in ['yd_api']:
+            self.tab = 'yd_api'
         else:
             self.tab = 'test'
         settings = crawler.settings
@@ -82,7 +82,7 @@ class MysqlPipeline(object):
         try:
             self.cursor.execute(sql, args)
             self.conn.commit()
-            print(item['title'])
+            print(item['trans'])
         except Exception as e:
             print(e)
             print('mysql error，链接为：{}'.format(item['url']))

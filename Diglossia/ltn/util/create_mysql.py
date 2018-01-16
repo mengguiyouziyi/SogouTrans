@@ -1,4 +1,4 @@
-from util.info import etl
+from info import etl
 
 
 class CreateTable(object):
@@ -14,14 +14,11 @@ class CreateTable(object):
         sql = """
             CREATE TABLE IF NOT EXISTS `{}` (
               `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
-              `url` varchar(500) DEFAULT '' COMMENT '网页url',
-              `title` varchar(500) DEFAULT '' COMMENT '文章title',
-              `text` longtext COMMENT '文章',
+              `sours` longtext COMMENT '原文',
+              `trans` longtext COMMENT '译文',
               `load_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '落地时间',
-              PRIMARY KEY (`id`),
-              KEY `index_title` (`title`),
-              KEY `index_url` (`url`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ltn中英对照';
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='有道翻译';
 		""".format(self.t_name)
         self.cur.execute(sql)
         self.conn.commit()
@@ -30,5 +27,5 @@ class CreateTable(object):
 if __name__ == '__main__':
     # print(etl.get_host_info())
     # print(etl.get_proto_info())
-    ct = CreateTable('ltn')
+    ct = CreateTable('yd_api')
     ct.create()
