@@ -8,7 +8,7 @@ from redis import StrictRedis
 # v = server.spop('aaaaa')
 # print(v)
 # set_adsl.set_interface(sys.argv[1])
-set_adsl.set_interface('10.142.97.80')
+set_adsl.set_interface('10.146.252.113')
 s = urlopen('http://www.baidu.com')
 print(s)
 # etl_conf = {'host': '10.142.98.91', 'port': 3306, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
