@@ -7,7 +7,7 @@ from redis import StrictRedis
 # v = server.spop('aaaaa')
 # print(v)
 # set_adsl.set_interface(sys.argv[1])
-set_adsl.set_interface('10.142.97.80')
+# set_adsl.set_interface('10.142.97.80')
 etl_conf = {'host': '10.142.98.91', 'port': 3306, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
             'cursorclass': pymysql.cursors.DictCursor}
 etl = pymysql.connect(**etl_conf)
