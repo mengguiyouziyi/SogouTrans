@@ -17,7 +17,7 @@ etl_conf = {'host': '10.146.252.112', 'port': 3306, 'user': 'spider', 'password'
 etl = pymysql.connect(**etl_conf)
 etl.select_db('spider')
 cur = etl.cursor()
-sql = """select * from yd_api_ja-zh limit 1"""
+sql = """select * from yd_api_ja-zh"""
 cur.execute(sql)
 results = cur.fetchall()
 print(results)
