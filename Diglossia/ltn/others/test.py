@@ -5,7 +5,7 @@ from redis import StrictRedis
 
 # set_adsl.set_interface(sys.argv[1])
 set_adsl.set_interface('10.146.252.113')
-server = StrictRedis(host='10.134.9.106', decode_responses=True)
+server = StrictRedis(host='10.142.97.92', decode_responses=True)
 server.sadd('aaaaa', 'aaaaa')
 v = server.spop('aaaaa')
 print(v)
