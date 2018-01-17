@@ -4,7 +4,7 @@ from urllib.request import urlopen
 from redis import StrictRedis
 
 # set_adsl.set_interface(sys.argv[1])
-set_adsl.set_interface('10.146.252.113')
+set_adsl.set_interface('10.146.252.112')
 server = StrictRedis(host='10.146.252.113', decode_responses=True)
 server.sadd('aaaaa', 'aaaaa')
 v = server.spop('aaaaa')
