@@ -38,7 +38,7 @@ class SendMysql(object):
                 print(num)
             if not line:
                 continue
-            self.server.lpush(self.request_key, json.dumps(line, ensure_ascii=False))
+            self.server.lpush(self.request_key, line.strip())
 
     def close_file(self):
         self.file.close()
