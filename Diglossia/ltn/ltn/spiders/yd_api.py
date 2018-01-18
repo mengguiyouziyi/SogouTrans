@@ -35,6 +35,7 @@ class YdApiSpider(Spider):
 
     def __init__(self, crawler, src='zh', tgt='ja', *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)
+        self.url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
         self.ip = self.get_host_ip()
         self.settings = crawler.settings
         self.src = 'zh' if src == 'zh-CHS' else src
@@ -83,17 +84,20 @@ class YdApiSpider(Spider):
             if not line:
                 break
             elif num % 50 == 0:
-                self._send_request(aux)
+                salf, n, sign, data = self._get_params(aux)
+                yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
+                                     meta={'aux': aux}, callback=self.parse_httpbin, errback=self.errback_httpbin)
                 aux = ''
             else:
                 aux += (line + '\n')
                 num += 1
                 continue
-        self._send_request(aux)
+        salf, n, sign, data = self._get_params(aux)
+        yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
+                             meta={'aux': aux}, callback=self.parse_httpbin, errback=self.errback_httpbin)
         raise CloseSpider('no datas')
 
-    def _send_request(self, aux):
-        url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
+    def _get_params(self, aux):
         salf = str(int(time.time() * 1000) + random.randint(1, 10))
         n = 'fanyideskweb' + aux + salf + "aNPG!!u6sesA>hBAW1@(-"
         sign = hashlib.md5(n.encode('utf-8')).hexdigest()
@@ -111,8 +115,7 @@ class YdApiSpider(Spider):
             'action': "FY_BY_REALTIME",
             'typoResult': 'false'
         }
-        yield scrapy.Request(url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
-                             meta={'aux': aux}, callback=self.parse_httpbin, errback=self.errback_httpbin)
+        return salf, n, sign, data
 
     def parse_httpbin(self, response):
         aux = response.meta.get('aux')
