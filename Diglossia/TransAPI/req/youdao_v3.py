@@ -79,32 +79,32 @@ def main(f1, lines):
 
 
 if __name__ == '__main__':
-    source_lines = '''학생회 관계자 는 " 처음 만난 그, 알 그 는 확실히 좋아 보 인 다.'''
-    lines = ''
-    for line in source_lines.split('\n'):
-        # line = line.replace('"', '\"').replace('﻿', '') + '\n'
-        lines += line
-    trans_lines = translate(lines)
-    print(trans_lines)
-# with codecs.open('./source/news1k.zh', 'r', 'utf-8') as f:
-# 	with codecs.open('./result/news1k-youdao.ko', 'a', 'utf-8') as f1:
-# 		lines = ''
-# 		for i, line in enumerate(f.readlines()):
-# 			j = i + 1
-# 			print(str(j), line)
-# 			line = line.replace('"', '\"').replace('﻿', '')
-# 			lines += line
-# 			if line != '\n' and j % 51 == 0:  # 不为空，且51倍数时，写操作
-# 				main(f1, lines)
-# 				lines = ''
-# 				time.sleep(3)
-# 			else:  # 还剩三种情况：空=51，空！=51，不空！=51
-# 				if line == '\n':
-# 					continue
-# if line != '\n' and j % 53 == 0:  # 不空=51时，写
-# 	main(f1, lines)
-# 	lines = ''
-# 	time.sleep(3)
-# else:  # 空=51，空！=51，不空且除了53之外的所有情况都过
-# 	continue
-# main(f1, lines)
+    # source_lines = '''학생회 관계자 는 " 처음 만난 그, 알 그 는 확실히 좋아 보 인 다.'''
+    # lines = ''
+    # for line in source_lines.split('\n'):
+    #     # line = line.replace('"', '\"').replace('﻿', '') + '\n'
+    #     lines += line
+    # trans_lines = translate(lines)
+    # print(trans_lines)
+    with codecs.open('./source/news1k.zh', 'r', 'utf-8') as f:
+        with codecs.open('./result/news1k-youdao.ko', 'a', 'utf-8') as f1:
+            lines = ''
+            for i, line in enumerate(f.readlines()):
+                j = i + 1
+                print(str(j), line)
+                line = line.replace('"', '\"').replace('﻿', '')
+                lines += line
+                if line != '\n' and j % 51 == 0:  # 不为空，且51倍数时，写操作
+                    main(f1, lines)
+                    lines = ''
+                    time.sleep(3)
+                else:  # 还剩三种情况：空=51，空！=51，不空！=51
+                    if line == '\n':
+                        continue
+                if line != '\n' and j % 53 == 0:  # 不空=51时，写
+                    main(f1, lines)
+                    lines = ''
+                    time.sleep(3)
+                else:  # 空=51，空！=51，不空且除了53之外的所有情况都过
+                    continue
+                main(f1, lines)

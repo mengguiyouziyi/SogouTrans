@@ -78,21 +78,26 @@ class YdApiSpider(Spider):
 
     def start_requests(self):
         aux = ''
-        num = 0
-        while 1:
+        num = 50
+        while num:
+            num -= 0
             line = self.server.rpop(self.request_key)
-            if not line:
-                break
-            elif num % 10 == 0:
-                print(aux)
-                salf, n, sign, data = self._get_params(aux)
-                yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
-                                     meta={'aux': aux}, callback=self.parse_httpbin, errback=self.errback_httpbin)
-                aux = ''
-            else:
-                aux += (line + '\n')
-                num += 1
-                continue
+            aux += (line + '\n')
+
+        # while 1:
+        #     line = self.server.rpop(self.request_key)
+        #     if not line:
+        #         break
+        #     elif num % 10 == 0:
+        #         print(aux)
+        #         salf, n, sign, data = self._get_params(aux)
+        #         yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
+        #                              meta={'aux': aux}, callback=self.parse_httpbin, errback=self.errback_httpbin)
+        #         aux = ''
+        #     else:
+        #         aux += (line + '\n')
+        #         num += 1
+        #         continue
         salf, n, sign, data = self._get_params(aux)
         yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
                              meta={'aux': aux}, callback=self.parse_httpbin, errback=self.errback_httpbin)
