@@ -157,3 +157,6 @@ class YdApiSpider(Spider):
         elif failure.check(TimeoutError, TCPTimedOutError):
             request = failure.request
             self.logger.error('TimeoutError on %s', request.meta.get('l'))
+        else:
+            request = failure.request
+            self.logger.error('UnknowError on %s', request.meta.get('l'))
