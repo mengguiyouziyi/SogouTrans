@@ -29,15 +29,13 @@ class YdApiSpider(Spider):
         'DEFAULT_REQUEST_HEADERS': {
             'content-type': "application/x-www-form-urlencoded; charset=UTF-8",
             'referer': "http://fanyi.youdao.com/",
-            # 'cookie': "OUTFOX_SEARCH_USER_ID_NCOO=1505415871.087814; OUTFOX_SEARCH_USER_ID=-1582931044@10.168.8.64; JSESSIONID=aaaqVIf9Ihfg97CoOXlcw; fanyi-ad-id=39535; fanyi-ad-closed=1; OUTFOX_SEARCH_USER_ID_NCOO=1505415871.087814; OUTFOX_SEARCH_USER_ID=-1582931044@10.168.8.64; ___rl__test__cookies=1514285803703",
-            # 'cookie': "OUTFOX_SEARCH_USER_ID=104413480@10.168.8.63; JSESSIONID=aaaE_vQIwsIxP7ATeVhew",
         },
         'DOWNLOAD_DELAY': 2
     }
 
     def __init__(self, crawler, src='zh', tgt='ja', *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)
-        print(self.get_host_ip())
+        self.ip = self.get_host_ip()
         self.settings = crawler.settings
         self.src = 'zh' if src == 'zh-CHS' else src
         self.tgt = 'zh' if tgt == 'zh-CHS' else tgt
@@ -45,6 +43,7 @@ class YdApiSpider(Spider):
         self.cookie_dict = self.get_cookie()
         self.cookie_key = '%(name)s:cookies' % {'name': self.name}
         self.request_key = '%(name)s:requests' % {'name': self.name}
+        print(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
         self.server.sadd(self.cookie_dict, json.dumps(self.cookie_dict, ensure_ascii=False))
         self.cookie = self.server.srandmember(self.cookie_dict)
 
@@ -57,6 +56,10 @@ class YdApiSpider(Spider):
         return cookie_dict
 
     def get_host_ip(self):
+        """
+        获取当前网络环境的ip地址
+        :return:
+        """
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
             s.connect(('8.8.8.8', 80))
@@ -127,6 +130,6 @@ class YdApiSpider(Spider):
             item['url'] = response.url
             item['project'] = self.settings.get('BOT_NAME')
             item['spider'] = self.name
-            item['server'] = socket.gethostname()
+            item['server'] = self.ip
 
             yield item
