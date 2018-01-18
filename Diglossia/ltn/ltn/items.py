@@ -3,28 +3,39 @@
 # Define here the models for your scraped items
 #
 # See documentation in:
-# http://doc.scrapy.org/en/latest/topics/items.html
+# http://doc.org/en/latest/topics/items.html
 
-import scrapy
-
-
-class LtnItem(scrapy.Item):
-    url = scrapy.Field()
-    title = scrapy.Field()
-    text = scrapy.Field()
+from scrapy.item import Item, Field
 
 
-class YdApiItem(scrapy.Item):
-    src = scrapy.Field()
-    srcType = scrapy.Field()
-    zh = scrapy.Field()
-    en = scrapy.Field()
-    ja = scrapy.Field()
-    ko = scrapy.Field()
-    fr = scrapy.Field()
-    ru = scrapy.Field()
-    es = scrapy.Field()
-    pt = scrapy.Field()
-    ara = scrapy.Field()
-    de = scrapy.Field()
-    it = scrapy.Field()
+class LtnItem(Item):
+    url = Field()
+    title = Field()
+    text = Field()
+
+
+class YdApiItem(Item):
+    # Primary fields
+    src = Field()
+    srcType = Field()
+    zh = Field()
+    en = Field()
+    ja = Field()
+    ko = Field()
+    fr = Field()
+    ru = Field()
+    es = Field()
+    pt = Field()
+    ara = Field()
+    de = Field()
+    it = Field()
+
+    # Calculated fields
+    images = Field()
+    location = Field()
+
+    # Housekeeping fields
+    url = Field()
+    project = Field()
+    spider = Field()
+    server = Field()

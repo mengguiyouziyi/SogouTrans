@@ -14,6 +14,7 @@ import json
 import hashlib
 import time
 import codecs
+import socket
 import random
 import requests
 from redis import StrictRedis
@@ -59,11 +60,7 @@ class YdApiSpider(Spider):
     def from_crawler(cls, crawler, *args, **kwargs):
         return cls(crawler)
 
-
     def start_requests(self):
-        # with codecs.open('D:\My Package\My project\SogouTrans\Diglossia\TransAPI\\req\source\\tourism1600.zh', 'r',
-        #                  'utf-8') as f:
-        #     for l in f:
         while True:
             l = self.server.rpop(self.request_key)
             if not l:
@@ -110,20 +107,16 @@ class YdApiSpider(Spider):
                 s = dict_rt.get('src', '')
                 trans += t  # 此循环结束后，此行拼接完成
                 sours += s
-            d = {}.fromkeys(['src', 'srcType', 'zh', 'en', 'ja', 'ko', 'fr', 'ru', 'es', 'pt', 'ara', 'de', 'it'], '')
+            d = {}.fromkeys(
+                ['src', 'srcType', 'zh', 'en', 'ja', 'ko', 'fr', 'ru', 'es', 'pt', 'ara', 'de', 'it', 'url', 'project',
+                 'spider', 'server'], '')
             item.update(d)
             item['src'] = sours
             item['srcType'] = self.src  # 源语言类型
             item[self.tgt] = trans
-            # item['zh'] = trans if self.tgt == 'zh' else ''
-            # item['en'] = trans if self.tgt == 'en' else ''
-            # item['ja'] = trans if self.tgt == 'ja' else ''
-            # item['ko'] = trans if self.tgt == 'ko' else ''
-            # item['fr'] = trans if self.tgt == 'fr' else ''
-            # item['ru'] = trans if self.tgt == 'ru' else ''
-            # item['es'] = trans if self.tgt == 'es' else ''
-            # item['pt'] = trans if self.tgt == 'pt' else ''
-            # item['ara'] = trans if self.tgt == 'ara' else ''
-            # item['de'] = trans if self.tgt == 'de' else ''
-            # item['it'] = trans if self.tgt == 'it' else ''
+            item['url'] = response.url
+            item['project'] = self.settings.get('BOT_NAME')
+            item['spider'] = self.name
+            item['server'] = socket.gethostname()
+
             yield item
