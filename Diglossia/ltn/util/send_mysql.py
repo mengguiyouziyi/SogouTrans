@@ -1,5 +1,5 @@
 import codecs
-from .info import etl
+from info import etl
 
 
 class SendMysql(object):
