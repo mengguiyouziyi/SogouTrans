@@ -15,15 +15,20 @@ sys.path.append(path)
 sys.path.append(base_path)
 sys.path.append(father_path)
 import pymysql
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class MysqlPipeline(object):
     def __init__(self, crawler):
-        if crawler.spider.name in ['yd_api']:
+        self.crawler = crawler
+        self.spider = self.crawler.spider
+        if self.spider.name in ['yd_api']:
             self.tab = 'yd_news'
         else:
             self.tab = 'test'
-        settings = crawler.settings
+        settings = self.crawler.settings
         dbparams = dict(
             host=settings['MYSQL_HOST'],
             port=settings['MYSQL_PORT'],
@@ -56,9 +61,9 @@ class MysqlPipeline(object):
         try:
             self.cursor.execute(sql)
         except Exception as e:
-            print(e)
-            print('获取数据表字段错误....')
-            exit(1)
+            logger.error(e)
+            logger.error('获取数据表字段错误....')
+            self.crawler.engine.close_spider(self.spider, 'mysql error')
         results = self.cursor.fetchall()
         col_str = results[0]['group_concat(column_name)']
         col_list = col_str.split(',')
@@ -82,8 +87,8 @@ class MysqlPipeline(object):
         try:
             self.cursor.execute(sql, args)
             self.conn.commit()
-            print(item['src'])
+            logger.info(item['src'])
         except Exception as e:
-            print(e)
-            print('mysql error，源为：{}'.format(item['src']))
+            logger.error(e)
+            logger.error('mysql error，源为：{}'.format(item['src']))
             self.crawler.engine.close_spider(spider, 'mysql error')

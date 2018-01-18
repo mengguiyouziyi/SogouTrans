@@ -21,9 +21,6 @@ from urllib.parse import urlencode
 from scrapy.spiders import Spider
 from scrapy.exceptions import CloseSpider
 from ltn.items import YdApiItem
-from scrapy.spidermiddlewares.httperror import HttpError
-from twisted.internet.error import DNSLookupError
-from twisted.internet.error import TimeoutError, TCPTimedOutError
 
 
 class YdApiSpider(Spider):
@@ -46,8 +43,12 @@ class YdApiSpider(Spider):
         self.cookie_dict = self.get_cookie()
         self.cookie_key = '%(name)s:cookies' % {'name': self.name}
         self.request_key = '%(name)s:requests' % {'name': self.name}
+        self.error_key = '%(name)s:error' % {'name': self.name}
         self.server.sadd(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
         self.cookie = self.server.srandmember(self.cookie_key)
+        self.item_keys = ['src', 'srcType', 'zh', 'en', 'ja', 'ko', 'fr', 'ru', 'es', 'pt', 'ara', 'de', 'it', 'url',
+                          'project', 'spider', 'server']
+        self.d = {}.fromkeys(self.item_keys, '')
 
     def get_cookie(self):
         url = 'http://fanyi.youdao.com/'
@@ -75,43 +76,65 @@ class YdApiSpider(Spider):
         return cls(crawler)
 
     def start_requests(self):
-        while True:
-            l = self.server.rpop(self.request_key)
-            if not l:
-                raise CloseSpider('no datas')
-            url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
-            salf = str(int(time.time() * 1000) + random.randint(1, 10))
-            n = 'fanyideskweb' + l + salf + "aNPG!!u6sesA>hBAW1@(-"
-            sign = hashlib.md5(n.encode('utf-8')).hexdigest()
-            data = {
-                'i': l,
-                'from': 'zh-CHS' if self.src == 'zh' else self.src,
-                'to': 'zh-CHS' if self.tgt == 'zh' else self.tgt,
-                'smartresult': 'dict',
-                'client': 'fanyideskweb',
-                'salt': salf,
-                'sign': sign,
-                'doctype': 'json',
-                'version': "2.1",
-                'keyfrom': "fanyi.web",
-                # 'action': "FY_BY_DEFAULT",
-                # 'action': "FY_BY_CLICKBUTTION",
-                'action': "FY_BY_REALTIME",
-                'typoResult': 'false'
-            }
-            yield scrapy.Request(url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
-                                 meta={'l': l}, callback=self.parse_httpbin, errback=self.errback_httpbin)
+        aux = ''
+        num = 0
+        while 1:
+            line = self.server.rpop(self.request_key)
+            if not line:
+                break
+            elif num % 50 == 0:
+                self._send_request(aux)
+                aux = ''
+            else:
+                aux += (line + '\n')
+                num += 1
+                continue
+        self._send_request(aux)
+        raise CloseSpider('no datas')
+
+    def _send_request(self, aux):
+        url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
+        salf = str(int(time.time() * 1000) + random.randint(1, 10))
+        n = 'fanyideskweb' + aux + salf + "aNPG!!u6sesA>hBAW1@(-"
+        sign = hashlib.md5(n.encode('utf-8')).hexdigest()
+        data = {
+            'i': aux,
+            'from': 'zh-CHS' if self.src == 'zh' else self.src,
+            'to': 'zh-CHS' if self.tgt == 'zh' else self.tgt,
+            'smartresult': 'dict',
+            'client': 'fanyideskweb',
+            'salt': salf,
+            'sign': sign,
+            'doctype': 'json',
+            'version': "2.1",
+            'keyfrom': "fanyi.web",
+            'action': "FY_BY_REALTIME",
+            'typoResult': 'false'
+        }
+        yield scrapy.Request(url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
+                             meta={'aux': aux}, callback=self.parse_httpbin, errback=self.errback_httpbin)
 
     def parse_httpbin(self, response):
+        aux = response.meta.get('aux')
+        # -------------- 以下三种情况都会重新打入redis，但碰到的可能性不大 -----------------
         try:
             resp = json.loads(response.text)
-        except:
+        except Exception as e:
+            self.logger.error(repr(e))
+            # self.logger.error('JsonLoadsError on %s', aux)
+            for line in aux.split('\n'):
+                self.server.lpush(self.error_key, line.strip())
             return
         if resp.get('errorCode') != 0:
-            print(response.text)
+            self.logger.error(repr(response.text))
+            for line in aux.split('\n'):
+                self.server.lpush(self.error_key, line.strip())
             return
         results = resp.get('translateResult', [])
         if not results:
+            self.logger.error(repr(response.text))
+            for line in aux.split('\n'):
+                self.server.lpush(self.error_key, line.strip())
             return
         for result in results:
             item = YdApiItem()
@@ -122,41 +145,22 @@ class YdApiSpider(Spider):
                 s = dict_rt.get('src', '')
                 trans += t  # 此循环结束后，此行拼接完成
                 sours += s
-            d = {}.fromkeys(
-                ['src', 'srcType', 'zh', 'en', 'ja', 'ko', 'fr', 'ru', 'es', 'pt', 'ara', 'de', 'it', 'url', 'project',
-                 'spider', 'server'], '')
-            item.update(d)
+            item.update(self.d)
             item['src'] = sours
             item['srcType'] = self.src  # 源语言类型
             item[self.tgt] = trans
-            item['url'] = response.url
-            item['project'] = self.settings.get('BOT_NAME')
-            item['spider'] = self.name
+            # item['url'] = response.url
+            # item['project'] = self.settings.get('BOT_NAME')
+            # item['spider'] = self.name
             item['server'] = self.ip
-
             yield item
 
     def errback_httpbin(self, failure):
         # log all failures
         self.logger.error(repr(failure))
-
-        # in case you want to do something special for some errors,
-        # you may need the failure's type:
-
-        if failure.check(HttpError):
-            # these exceptions come from HttpError spider middleware
-            # you can get the non-200 response
-            response = failure.value.response
-            self.logger.error('HttpError on %s', response.meta.get('l'))
-
-        elif failure.check(DNSLookupError):
-            # this is the original request
-            request = failure.request
-            self.logger.error('DNSLookupError on %s', request.meta.get('l'))
-
-        elif failure.check(TimeoutError, TCPTimedOutError):
-            request = failure.request
-            self.logger.error('TimeoutError on %s', request.meta.get('l'))
-        else:
-            request = failure.request
-            self.logger.error('UnknowError on %s', request.meta.get('l'))
+        request = failure.request
+        aux = request.meta.get('aux')
+        # -------------------这种情况会经常遇到---------------------
+        self.logger.error('TimeOutError')
+        for line in aux.split('\n'):
+            self.server.lpush(self.request_key, line.strip())
