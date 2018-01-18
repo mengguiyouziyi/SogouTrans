@@ -45,6 +45,7 @@ class YdApiSpider(Spider):
         self.request_key = '%(name)s:requests' % {'name': self.name}
         print(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
         self.server.sadd(self.cookie_dict, json.dumps(self.cookie_dict, ensure_ascii=False))
+        self.server.sadd('nihao', json.dumps(self.cookie_dict, ensure_ascii=False))
         self.cookie = self.server.srandmember(self.cookie_dict)
 
     def get_cookie(self):
