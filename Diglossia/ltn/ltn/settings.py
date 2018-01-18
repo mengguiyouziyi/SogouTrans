@@ -64,6 +64,8 @@ RETRY_TIMES = 5
 RETRY_HTTP_CODES = [500, 502, 503, 504, 408, 429]
 # REDIRECT_ENABLED = False
 
+DOWNLOAD_TIMEOUT = 60
+
 
 USER_AGENT_CHOICES = [
     'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0_3 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Mobile/15A432',
