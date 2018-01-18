@@ -26,9 +26,22 @@ from ltn.items import YdApiItem
 class YdApiSpider(Spider):
     name = 'yd_api'
     custom_settings = {
+        # 'DEFAULT_REQUEST_HEADERS': {
+        #     'content-type': "application/x-www-form-urlencoded; charset=UTF-8",
+        #     'referer': "http://fanyi.youdao.com/",
+        # },
         'DEFAULT_REQUEST_HEADERS': {
+            'host': "fanyi.youdao.com",
+            'connection': "keep-alive",
+            'content-length': "40576",
+            'accept': "application/json, text/javascript, */*; q=0.01",
+            'origin': "http://fanyi.youdao.com",
+            'x-requested-with': "XMLHttpRequest",
             'content-type': "application/x-www-form-urlencoded; charset=UTF-8",
             'referer': "http://fanyi.youdao.com/",
+            'accept-encoding': "gzip, deflate",
+            'accept-language': "zh-CN,zh;q=0.9,en;q=0.8",
+            'cache-control': "no-cache",
         },
         'DOWNLOAD_DELAY': 2
     }
