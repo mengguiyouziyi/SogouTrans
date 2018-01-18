@@ -33,7 +33,7 @@ class YdApiSpider(Spider):
         'DEFAULT_REQUEST_HEADERS': {
             'host': "fanyi.youdao.com",
             'connection': "keep-alive",
-            'content-length': "40576",
+            # 'content-length': "40576",
             'accept': "application/json, text/javascript, */*; q=0.01",
             'origin': "http://fanyi.youdao.com",
             'x-requested-with': "XMLHttpRequest",
