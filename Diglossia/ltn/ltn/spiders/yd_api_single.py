@@ -42,7 +42,7 @@ class YdApiSpider(Spider):
         self.server = StrictRedis(host=self.settings.get('REDIS_HOST'), decode_responses=True)
         self.cookie_dict = self.get_cookie()
         self.cookie_key = '%(name)s:cookies' % {'name': self.name}
-        self.request_key = '%(name)s:requests' % {'name': self.name}
+        self.request_key = '%(name)s:requests' % {'name': 'yd_api'}
         self.error_key = '%(name)s:error' % {'name': self.name}
         self.server.sadd(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
         self.cookie = self.server.srandmember(self.cookie_key)
