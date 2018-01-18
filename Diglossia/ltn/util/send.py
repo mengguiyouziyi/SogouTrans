@@ -1,29 +1,50 @@
-import redis, hashlib
-from info import etl
+import codecs
+import json
+from info import etl, server
 
 
-class Send(object):
-    def __init__(self, conn=etl, redis_key='cnn_uncrawl:dupefilter'):
+class SendMysql(object):
+    def __init__(self, conn=etl, server=server):
         self.conn = conn
-        self.cursor = self.conn.cursor()
-        self.r = redis.StrictRedis(host='10.142.97.92', decode_responses=True)
-        self.key = redis_key
-        self.sha = hashlib.sha1()
+        self.cursor = etl.cursor()
+        self.server = server
+        self.request_key = '%(name)s:requests' % {'name': 'yd_api'}
+        self.file = codecs.open('news1617.zh', 'r', 'utf-8')
 
-    def send(self):
-        sql = """select url from meishij"""
-        self.cursor.execute(sql)
-        results = self.cursor.fetchall()
-        for i, result in enumerate(results):
-            if (i + 1) % 5000 == 0:
-                print(i)
-            url = result.get('url', '')
-            if not url:
+    def send_mysql(self):
+        sql = """insert into yd_news(zh) VALUES (%s)"""
+        temp = []
+        num = 0
+        for line in self.file:
+            num += 1
+            if num % 10000 == 0:
+                print(num)
+            if not line:
                 continue
-            self.sha.update(url.encode('utf-8'))
-            self.r.sadd(self.key, self.sha.hexdigest())
+            if len(temp) > 5000:
+                self.cursor.executemany(sql, temp)
+                self.conn.commit()
+                temp.clear()
+            else:
+                temp.append(line.strip())
+        self.cursor.executemany(sql, temp)
+        self.conn.commit()
+
+    def send_redis(self):
+        num = 0
+        for line in self.file:
+            num += 1
+            if num % 10000 == 0:
+                print(num)
+            if not line:
+                continue
+            self.server.lpush(self.request_key, json.dumps(line, ensure_ascii=False))
+
+    def close_file(self):
+        self.file.close()
 
 
 if __name__ == '__main__':
-    send = Send()
-    send.send()
+    send = SendMysql()
+    send.send_redis()
+    send.close_file()

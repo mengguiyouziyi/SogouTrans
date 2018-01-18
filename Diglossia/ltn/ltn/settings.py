@@ -19,10 +19,10 @@ NEWSPIDER_MODULE = 'ltn.spiders'
 #################################################
 ################ scrapy-redis ###################
 # Enables scheduling storing requests queue in redis.
-SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+# SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 
 # Ensure all spiders share same duplicates filter through redis.
-DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+# DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 
 # ITEM_PIPELINES = {
 #     'scrapy_redis.pipelines.RedisPipeline': 300
@@ -53,8 +53,8 @@ DOWNLOAD_DELAY = 2
 # CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-COOKIES_ENABLED = False
-COOKIES_DEBUG = True
+# COOKIES_ENABLED = False
+# COOKIES_DEBUG = True
 
 # DEBUG INFO WARNING ERROR CRITICAL
 LOG_LEVEL = 'DEBUG'
@@ -134,7 +134,8 @@ ITEM_PIPELINES = {
 }
 
 # Mysql数据库的配置信息
-MYSQL_HOST = '10.146.252.112'
+MYSQL_HOST = '10.142.97.80'
+# MYSQL_HOST = '10.146.252.112'
 MYSQL_DBNAME = 'spider'  # 数据库名字，请修改
 MYSQL_USER = 'spider'  # 数据库账号，请修改
 MYSQL_PASSWD = 'chenguang'  # 数据库密码，请修改
