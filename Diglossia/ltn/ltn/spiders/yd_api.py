@@ -79,7 +79,7 @@ class YdApiSpider(Spider):
     def start_requests(self):
         aux = ''
         # num = 0
-        for i in range(50):
+        for i in range(30):
             line = self.server.rpop(self.request_key)
             aux += (line + '\n')
 
