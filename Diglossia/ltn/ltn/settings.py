@@ -134,8 +134,8 @@ ITEM_PIPELINES = {
 }
 
 # Mysql数据库的配置信息
-MYSQL_HOST = '10.142.97.80'
-# MYSQL_HOST = '10.146.252.112'
+# MYSQL_HOST = '10.142.97.80'
+MYSQL_HOST = '10.146.252.112'
 MYSQL_DBNAME = 'spider'  # 数据库名字，请修改
 MYSQL_USER = 'spider'  # 数据库账号，请修改
 MYSQL_PASSWD = 'chenguang'  # 数据库密码，请修改
