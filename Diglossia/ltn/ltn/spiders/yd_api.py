@@ -21,6 +21,9 @@ from urllib.parse import urlencode
 from scrapy.spiders import Spider
 from scrapy.exceptions import CloseSpider
 from ltn.items import YdApiItem
+from scrapy.spidermiddlewares.httperror import HttpError
+from twisted.internet.error import DNSLookupError
+from twisted.internet.error import TimeoutError, TCPTimedOutError
 
 
 class YdApiSpider(Spider):
@@ -96,7 +99,8 @@ class YdApiSpider(Spider):
                 'action': "FY_BY_REALTIME",
                 'typoResult': 'false'
             }
-            yield scrapy.Request(url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie))
+            yield scrapy.Request(url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
+                                 meta={'l': l}, errback=self.errback_httpbin)
 
     def parse(self, response):
         try:
@@ -131,3 +135,25 @@ class YdApiSpider(Spider):
             item['server'] = self.ip
 
             yield item
+
+    def errback_httpbin(self, failure):
+        # log all failures
+        self.logger.error(repr(failure))
+
+        # in case you want to do something special for some errors,
+        # you may need the failure's type:
+
+        if failure.check(HttpError):
+            # these exceptions come from HttpError spider middleware
+            # you can get the non-200 response
+            response = failure.value.response
+            self.logger.error('HttpError on %s', response.meta.get('l'))
+
+        elif failure.check(DNSLookupError):
+            # this is the original request
+            request = failure.request
+            self.logger.error('DNSLookupError on %s', request.meta.get('l'))
+
+        elif failure.check(TimeoutError, TCPTimedOutError):
+            request = failure.request
+            self.logger.error('TimeoutError on %s', request.meta.get('l'))
