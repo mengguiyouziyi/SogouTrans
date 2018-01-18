@@ -24,7 +24,7 @@ class MysqlPipeline(object):
     def __init__(self, crawler):
         self.crawler = crawler
         self.spider = self.crawler.spider
-        if self.spider.name in ['yd_api']:
+        if self.spider.name in ['yd_api', 'yd_api_single']:
             self.tab = 'yd_news'
         else:
             self.tab = 'test'
