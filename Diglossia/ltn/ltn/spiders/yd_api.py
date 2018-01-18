@@ -83,7 +83,8 @@ class YdApiSpider(Spider):
             line = self.server.rpop(self.request_key)
             if not line:
                 break
-            elif num % 30 == 0:
+            elif num % 10 == 0:
+                print(aux)
                 salf, n, sign, data = self._get_params(aux)
                 yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
                                      meta={'aux': aux}, callback=self.parse_httpbin, errback=self.errback_httpbin)
