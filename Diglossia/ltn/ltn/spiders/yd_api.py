@@ -100,9 +100,9 @@ class YdApiSpider(Spider):
                 'typoResult': 'false'
             }
             yield scrapy.Request(url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
-                                 meta={'l': l}, errback=self.errback_httpbin)
+                                 meta={'l': l}, callback=self.parse_httpbin, errback=self.errback_httpbin)
 
-    def parse(self, response):
+    def parse_httpbin(self, response):
         try:
             resp = json.loads(response.text)
         except:
