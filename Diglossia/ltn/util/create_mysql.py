@@ -12,6 +12,13 @@ class CreateTable(object):
         self.t_name = t_name
 
     def create(self):
+        """
+        item['url'] = response.url
+        item['project'] = self.settings.get('BOT_NAME')
+        item['spider'] = self.name
+        item['server'] = socket.gethostname()
+        :return:
+        """
         sql = """
             CREATE TABLE IF NOT EXISTS `{}` (
               `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
@@ -28,6 +35,10 @@ class CreateTable(object):
               `ara` longtext COMMENT '阿拉伯语',
               `de` longtext COMMENT '德语',
               `it` longtext COMMENT '意大利语',
+              `url` VARCHAR(500) DEFAULT '' COMMENT 'url',
+              `project` VARCHAR(100) DEFAULT '' COMMENT '工程名',
+              `spider` VARCHAR(100) DEFAULT '' COMMENT '爬虫名',
+              `server` VARCHAR(100) DEFAULT '' COMMENT 'host',
               `load_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '落地时间',
               PRIMARY KEY (`id`),
               KEY `index_src` (`src`(255))
