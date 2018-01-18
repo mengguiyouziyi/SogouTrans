@@ -43,10 +43,8 @@ class YdApiSpider(Spider):
         self.cookie_dict = self.get_cookie()
         self.cookie_key = '%(name)s:cookies' % {'name': self.name}
         self.request_key = '%(name)s:requests' % {'name': self.name}
-        print(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
-        self.server.sadd(self.cookie_dict, json.dumps(self.cookie_dict, ensure_ascii=False))
-        self.server.sadd('nihao', json.dumps(self.cookie_dict, ensure_ascii=False))
-        self.cookie = self.server.srandmember(self.cookie_dict)
+        self.server.sadd(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
+        self.cookie = self.server.srandmember(self.cookie_key)
 
     def get_cookie(self):
         url = 'http://fanyi.youdao.com/'
@@ -101,7 +99,6 @@ class YdApiSpider(Spider):
             yield scrapy.Request(url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie))
 
     def parse(self, response):
-        print(response.meta.items())
         try:
             resp = json.loads(response.text)
         except:
