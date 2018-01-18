@@ -19,12 +19,12 @@ class SendMysql(object):
             if not line:
                 continue
             if len(temp) > 5000:
-                self.cursor.executemany(sql)
+                self.cursor.executemany(sql, temp)
                 self.conn.commit()
                 temp.clear()
             else:
                 temp.append(line.strip())
-        self.cursor.executemany(sql)
+        self.cursor.executemany(sql, temp)
         self.conn.commit()
 
     def close_file(self):
