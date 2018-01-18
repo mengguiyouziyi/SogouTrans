@@ -88,6 +88,7 @@ class YdApiSpider(Spider):
             yield scrapy.Request(url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie))
 
     def parse(self, response):
+        print(response.meta.items())
         try:
             resp = json.loads(response.text)
         except:
