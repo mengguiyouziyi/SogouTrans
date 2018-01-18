@@ -20,7 +20,7 @@ import pymysql
 class MysqlPipeline(object):
     def __init__(self, crawler):
         if crawler.spider.name in ['yd_api']:
-            self.tab = 'yd_api'
+            self.tab = 'yd_news'
         else:
             self.tab = 'test'
         settings = crawler.settings
