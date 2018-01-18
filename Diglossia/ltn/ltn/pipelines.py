@@ -82,8 +82,8 @@ class MysqlPipeline(object):
         try:
             self.cursor.execute(sql, args)
             self.conn.commit()
-            print(item['trans'])
+            print(item['src'])
         except Exception as e:
             print(e)
-            print('mysql error，链接为：{}'.format(item['url']))
+            print('mysql error，源为：{}'.format(item['src']))
             self.crawler.engine.close_spider(spider, 'mysql error')
