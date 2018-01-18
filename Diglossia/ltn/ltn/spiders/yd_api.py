@@ -35,8 +35,9 @@ class YdApiSpider(Spider):
         'DOWNLOAD_DELAY': 2
     }
 
-    def __init__(self, src='zh', tgt='ja', **kwargs):
-        super(YdApiSpider, self).__init__(**kwargs)
+    def __init__(self, crawler, src='zh', tgt='ja', *args, **kwargs):
+        super(YdApiSpider, self).__init__(*args, **kwargs)
+        self.settings = crawler.settings
         self.src = 'zh' if src == 'zh-CHS' else src
         self.tgt = 'zh' if tgt == 'zh-CHS' else tgt
         self.server = StrictRedis(host=self.settings.get('REDIS_HOST'), decode_responses=True)
@@ -55,14 +56,9 @@ class YdApiSpider(Spider):
         return cookie_dict
 
     @classmethod
-    def from_crawler(cls, crawler, *args, **kwargs):
-        spider = cls(*args, **kwargs)
-        spider._set_crawler(crawler)
-        return spider
+    def from_crawler(cls, crawler):
+        return cls(crawler)
 
-    def _set_crawler(self, crawler):
-        self.crawler = crawler
-        self.settings = crawler.settings
 
     def start_requests(self):
         # with codecs.open('D:\My Package\My project\SogouTrans\Diglossia\TransAPI\\req\source\\tourism1600.zh', 'r',
