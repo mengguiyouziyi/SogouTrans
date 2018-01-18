@@ -15,5 +15,16 @@ class LtnItem(scrapy.Item):
 
 
 class YdApiItem(scrapy.Item):
-    trans = scrapy.Field()
-    sours = scrapy.Field()
+    src = scrapy.Field()
+    srcType = scrapy.Field()
+    zh = scrapy.Field()
+    en = scrapy.Field()
+    ja = scrapy.Field()
+    ko = scrapy.Field()
+    fr = scrapy.Field()
+    ru = scrapy.Field()
+    es = scrapy.Field()
+    pt = scrapy.Field()
+    ara = scrapy.Field()
+    de = scrapy.Field()
+    it = scrapy.Field()

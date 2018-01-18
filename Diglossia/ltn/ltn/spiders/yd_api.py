@@ -23,7 +23,7 @@ from scrapy.exceptions import CloseSpider
 from ltn.items import YdApiItem
 
 
-class MeishijieSpider(Spider):
+class YdApiSpider(Spider):
     name = 'yd_api'
     custom_settings = {
         'DEFAULT_REQUEST_HEADERS': {
@@ -35,15 +35,18 @@ class MeishijieSpider(Spider):
         'DOWNLOAD_DELAY': 2
     }
 
-    def __init__(self):
+    def __init__(self, src='zh', tgt='ja', *args, **kwargs):
+        super(YdApiSpider, self).__init__(*args, **kwargs)
+        self.src = 'zh' if src == 'zh-CHS' else src
+        self.tgt = 'zh' if tgt == 'zh-CHS' else tgt
         self.server = StrictRedis(host=self.settings.get('REDIS_HOST'), decode_responses=True)
-        self.cookie_dict = self.login()
+        self.cookie_dict = self.get_cookie()
         self.cookie_key = '%(name)s:cookies' % {'name': self.name}
         self.request_key = '%(name)s:requests' % {'name': self.name}
         self.server.sadd(self.cookie_dict, json.dumps(self.cookie_dict, ensure_ascii=False))
         self.cookie = self.server.srandmember(self.cookie_dict)
 
-    def login(self):
+    def get_cookie(self):
         url = 'http://fanyi.youdao.com/'
         uas = self.settings.get('USER_AGENT_CHOICES', [])
         headers = {'User-Agent': random.choice(uas)}
@@ -65,8 +68,8 @@ class MeishijieSpider(Spider):
             sign = hashlib.md5(n.encode('utf-8')).hexdigest()
             data = {
                 'i': l,
-                'from': 'zh-CHS',
-                'to': 'ja',
+                'from': 'zh-CHS' if self.src == 'zh' else self.src,
+                'to': 'zh-CHS' if self.tgt == 'zh' else self.tgt,
                 'smartresult': 'dict',
                 'client': 'fanyideskweb',
                 'salt': salf,
@@ -97,10 +100,24 @@ class MeishijieSpider(Spider):
             trans = ''
             sours = ''
             for dict_rt in result:
-                tgt = dict_rt.get('tgt', '')
-                src = dict_rt.get('src', '')
-                trans += tgt  # 此循环结束后，此行拼接完成
-                sours += src
-            item['trans'] = trans
-            item['sours'] = sours
+                t = dict_rt.get('tgt', '')
+                s = dict_rt.get('src', '')
+                trans += t  # 此循环结束后，此行拼接完成
+                sours += s
+            d = {}.fromkeys(['src', 'srcType', 'zh', 'en', 'ja', 'ko', 'fr', 'ru', 'es', 'pt', 'ara', 'de', 'it'], '')
+            item.update(d)
+            item['src'] = sours
+            item['srcType'] = self.src  # 源语言类型
+            item[self.tgt] = trans
+            # item['zh'] = trans if self.tgt == 'zh' else ''
+            # item['en'] = trans if self.tgt == 'en' else ''
+            # item['ja'] = trans if self.tgt == 'ja' else ''
+            # item['ko'] = trans if self.tgt == 'ko' else ''
+            # item['fr'] = trans if self.tgt == 'fr' else ''
+            # item['ru'] = trans if self.tgt == 'ru' else ''
+            # item['es'] = trans if self.tgt == 'es' else ''
+            # item['pt'] = trans if self.tgt == 'pt' else ''
+            # item['ara'] = trans if self.tgt == 'ara' else ''
+            # item['de'] = trans if self.tgt == 'de' else ''
+            # item['it'] = trans if self.tgt == 'it' else ''
             yield item
