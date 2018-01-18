@@ -116,7 +116,7 @@ class YdApiSpider(Spider):
 
     def parse_httpbin(self, response):
         aux = response.meta.get('aux')
-        # -------------- 以下三种情况都会重新打入redis，但碰到的可能性不大 -----------------
+        # -------------- 以下三种情况都会重新打入redis，但碰到的可能性不大 ----------------
         try:
             resp = json.loads(response.text)
         except Exception as e:
