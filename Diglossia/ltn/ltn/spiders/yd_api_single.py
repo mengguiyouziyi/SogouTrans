@@ -35,6 +35,7 @@ class YdApiSpider(Spider):
 
     def __init__(self, crawler, src='zh', tgt='ja', *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)
+        self.url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
         self.ip = self.get_host_ip()
         self.settings = crawler.settings
         self.src = 'zh' if src == 'zh-CHS' else src
@@ -80,10 +81,11 @@ class YdApiSpider(Spider):
             line = self.server.rpop(self.request_key)
             if not line:
                 raise CloseSpider('no datas')
-            self._send_request(line)
+            salf, n, sign, data = self._get_params(line)
+            yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
+                                 meta={'line': line}, callback=self.parse_httpbin, errback=self.errback_httpbin)
 
-    def _send_request(self, line):
-        url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
+    def _get_params(self, line):
         salf = str(int(time.time() * 1000) + random.randint(1, 10))
         n = 'fanyideskweb' + line + salf + "aNPG!!u6sesA>hBAW1@(-"
         sign = hashlib.md5(n.encode('utf-8')).hexdigest()
@@ -101,8 +103,7 @@ class YdApiSpider(Spider):
             'action': "FY_BY_REALTIME",
             'typoResult': 'false'
         }
-        yield scrapy.Request(url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
-                             meta={'line': line}, callback=self.parse_httpbin, errback=self.errback_httpbin)
+        return salf, n, sign, data
 
     def parse_httpbin(self, response):
         line = response.meta.get('line')
@@ -150,4 +151,3 @@ class YdApiSpider(Spider):
         # -------------------这种情况会经常遇到---------------------
         self.logger.error('TimeOutError')
         self.server.lpush(self.error_key, line.strip())
-
