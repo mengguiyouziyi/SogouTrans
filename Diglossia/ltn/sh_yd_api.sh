@@ -20,7 +20,7 @@ src='zh'
 tgt='ja'
 for ip in $nips; do
     echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    nohup python ./cmd_yd_api.py $ip $src $tgt >> $ip"_"$src"-"$tgt".out" 2>&1 &
+    nohup python ./cmd_yd_api.py $src $tgt $ip >> $ip"_"$src"-"$tgt".out" 2>&1 &
     break
 done
 
