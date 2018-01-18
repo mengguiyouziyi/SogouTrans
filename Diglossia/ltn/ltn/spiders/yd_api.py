@@ -13,7 +13,6 @@ import scrapy
 import json
 import hashlib
 import time
-import codecs
 import socket
 import random
 import requests
@@ -38,6 +37,7 @@ class YdApiSpider(Spider):
 
     def __init__(self, crawler, src='zh', tgt='ja', *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)
+        print(self.get_host_ip())
         self.settings = crawler.settings
         self.src = 'zh' if src == 'zh-CHS' else src
         self.tgt = 'zh' if tgt == 'zh-CHS' else tgt
@@ -55,6 +55,15 @@ class YdApiSpider(Spider):
         response = requests.get(url=url, headers=headers)
         cookie_dict = dict(response.cookies.items())
         return cookie_dict
+
+    def get_host_ip(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            s.connect(('8.8.8.8', 80))
+            ip = s.getsockname()[0]
+        finally:
+            s.close()
+        return ip
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
