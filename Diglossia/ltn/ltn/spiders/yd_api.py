@@ -56,7 +56,7 @@ class YdApiSpider(Spider):
         return cookie_dict
 
     @classmethod
-    def from_crawler(cls, crawler):
+    def from_crawler(cls, crawler, *args, **kwargs):
         return cls(crawler)
 
 
