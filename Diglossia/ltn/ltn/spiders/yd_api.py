@@ -35,8 +35,8 @@ class YdApiSpider(Spider):
         'DOWNLOAD_DELAY': 2
     }
 
-    def __init__(self, src='zh', tgt='ja', *args, **kwargs):
-        super(YdApiSpider, self).__init__(*args, **kwargs)
+    def __init__(self, src='zh', tgt='ja', **kwargs):
+        super(YdApiSpider, self).__init__(**kwargs)
         self.src = 'zh' if src == 'zh-CHS' else src
         self.tgt = 'zh' if tgt == 'zh-CHS' else tgt
         self.server = StrictRedis(host=self.settings.get('REDIS_HOST'), decode_responses=True)
