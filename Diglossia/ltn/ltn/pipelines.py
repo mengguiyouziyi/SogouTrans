@@ -23,11 +23,9 @@ logger = logging.getLogger(__name__)
 class MysqlPipeline(object):
     def __init__(self, crawler):
         self.crawler = crawler
+        self.item = self.crawler.item
         self.spider = self.crawler.spider
-        if self.spider.name in ['yd_api', 'yd_api_single']:
-            self.tab = 'yd_news'
-        else:
-            self.tab = 'test'
+        self.tab = self.spider.name
         settings = self.crawler.settings
         dbparams = dict(
             host=settings['MYSQL_HOST'],
@@ -41,9 +39,30 @@ class MysqlPipeline(object):
         )
         self.conn = pymysql.connect(**dbparams)
         self.cursor = self.conn.cursor()
+        if not self.create():
+            self.crawler.engine.close_spider(self.spider, 'CreateTableError on {}'.format(self.tab))
+
         self.col_list = self._get_column()[1:-1]
         self.col_str = ','.join(self.col_list)
         self.val_str = self._handle_str(len(self.col_list))
+
+    def create(self):
+        sql = """CREATE TABLE IF NOT EXISTS `"""
+        sql += self.tab
+        sql += """` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',"""
+        for col, desc in self.item.col_list.items():
+            sql += """`{col}` text COMMENT '{desc}',""".format(col=col, desc=desc)
+        sql += """`load_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '落地时间', PRIMARY KEY (`id`),"""
+        for col in self.item.col_index_list:
+            sql += """KEY `index_{0}` (`{0}`(255))""".format(col)
+        sql += """) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='{tab_desc}';""".format(tab_desc=self.item.tab_desc)
+        try:
+            self.cursor.execute(sql)
+            self.conn.commit()
+            return True
+        except Exception as e:
+            logger.error(e)
+            return
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -54,7 +73,7 @@ class MysqlPipeline(object):
         获取mysql表 字段字符串
         :param con:
         :param table_in:
-        :return:
+        :return: 全部字段
         """
         sql = """select group_concat(column_name) from information_schema.columns WHERE table_name = '{tab}' and table_schema = 'spider'""".format(
             tab=self.tab)
@@ -82,13 +101,13 @@ class MysqlPipeline(object):
         return x
 
     def process_item(self, item, spider):
-        sql = """insert into {tab} ({col}) VALUES ({val})""".format(tab=self.tab, col=self.col_str, val=self.val_str)
-        args = [item[i] for i in self.col_list]
+        in_sql = """insert into {tab} ({col}) VALUES ({val})""".format(tab=self.tab, col=self.col_str, val=self.val_str)
+        in_args = [item[i] for i in self.col_list]
         try:
-            self.cursor.execute(sql, args)
+            self.cursor.execute(in_sql, in_args)
             self.conn.commit()
-            logger.info(item['src'])
+            logger.info(item[self.col_list[0]])
         except Exception as e:
             logger.error(e)
-            logger.error('mysql error，源为：{}'.format(item['src']))
+            logger.error('mysql error，源为：{}'.format(item[self.col_list[0]]))
             self.crawler.engine.close_spider(spider, 'mysql error')

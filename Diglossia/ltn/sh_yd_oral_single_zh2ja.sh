@@ -16,10 +16,16 @@ if [ -e pids_multi.txt ]; then
     done
     rm pids_multi.txt
 fi
-src='zh'
-tgt='ja'
+self=$BASH_SOURCE
+self=${self/sh/cmd}
+cmd_file=${self/sh/py}
+arr1=(${self//2/ })
+arr2=(${arr1[0]//_/ })
+arr3=(${arr1[1]//./ })
+src=${arr2[4]}
+tgt=${arr3[0]}
+out_file=$ip"_"$src"2"$tgt".out"
 for ip in $nips; do
     echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    nohup python ./cmd_yd_api_single.py $src $tgt $ip > $ip"_"$src"-"$tgt".out" 2>&1 &
+    nohup python $cmd_file $src $tgt $ip > $out_file 2>&1 &
 done
-

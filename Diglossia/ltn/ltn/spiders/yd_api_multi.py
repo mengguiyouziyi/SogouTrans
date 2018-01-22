@@ -24,34 +24,47 @@ from ltn.items import YdApiItem
 
 
 class YdApiSpider(Spider):
-    # name = 'yd_oral_single_zh2ko'
+    name = 'yd_api_multi'
     custom_settings = {
+        # 'DEFAULT_REQUEST_HEADERS': {
+        #     'content-type': "application/x-www-form-urlencoded; charset=UTF-8",
+        #     'referer': "http://fanyi.youdao.com/",
+        # },
         'DEFAULT_REQUEST_HEADERS': {
+            'host': "fanyi.youdao.com",
+            'connection': "keep-alive",
+            # 'content-length': "40576",
+            'accept': "application/json, text/javascript, */*; q=0.01",
+            'origin': "http://fanyi.youdao.com",
+            'x-requested-with': "XMLHttpRequest",
             'content-type': "application/x-www-form-urlencoded; charset=UTF-8",
             'referer': "http://fanyi.youdao.com/",
+            'accept-encoding': "gzip, deflate",
+            'accept-language': "zh-CN,zh;q=0.9,en;q=0.8",
+            'cache-control': "no-cache",
         },
         'DOWNLOAD_DELAY': 2
     }
 
-    def __init__(self, crawler, src, tgt, *args, **kwargs):
+    def __init__(self, crawler, src='zh', tgt='ja', *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)
-        self.src = src
-        self.tgt = tgt
         self.url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
-        self.ip = self._get_host_ip()
+        self.ip = self.get_host_ip()
         self.settings = crawler.settings
+        self.src = 'zh' if src == 'zh-CHS' else src
+        self.tgt = 'zh' if tgt == 'zh-CHS' else tgt
         self.server = StrictRedis(host=self.settings.get('REDIS_HOST'), decode_responses=True)
-        self.cookie_dict = self._get_cookie()
+        self.cookie_dict = self.get_cookie()
         self.cookie_key = '%(name)s:cookies' % {'name': self.name}
         self.request_key = '%(name)s:requests' % {'name': self.name}
-        self.error_key = '%(name)s:errors' % {'name': self.name}
+        self.error_key = '%(name)s:error' % {'name': self.name}
         self.server.sadd(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
         self.cookie = self.server.srandmember(self.cookie_key)
         self.item_keys = ['src', 'srcType', 'zh', 'en', 'ja', 'ko', 'fr', 'ru', 'es', 'pt', 'ara', 'de', 'it', 'url',
                           'project', 'spider', 'server']
         self.d = {}.fromkeys(self.item_keys, '')
 
-    def _get_cookie(self):
+    def get_cookie(self):
         url = 'http://fanyi.youdao.com/'
         uas = self.settings.get('USER_AGENT_CHOICES', [])
         headers = {'User-Agent': random.choice(uas)}
@@ -59,7 +72,7 @@ class YdApiSpider(Spider):
         cookie_dict = dict(response.cookies.items())
         return cookie_dict
 
-    def _get_host_ip(self):
+    def get_host_ip(self):
         """
         获取当前网络环境的ip地址
         :return:
@@ -74,26 +87,42 @@ class YdApiSpider(Spider):
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
-        return cls(crawler, *args, **kwargs)
+        return cls(crawler)
 
     def start_requests(self):
-        while 1:
+        aux = ''
+        # num = 0
+        for i in range(30):
             line = self.server.rpop(self.request_key)
-            if not line:
-                raise CloseSpider('no datas')
-            salf, n, sign, data = self._get_params(line)
-            yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
-                                 meta={'line': line}, callback=self.parse_httpbin, errback=self.errback_httpbin)
+            aux += (line + '\n')
 
-    def _get_params(self, line):
+        # while 1:
+        #     line = self.server.rpop(self.request_key)
+        #     if not line:
+        #         break
+        #     elif num % 10 == 0:
+        #         print(aux)
+        #         salf, n, sign, data = self._get_params(aux)
+        #         yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
+        #                              meta={'aux': aux}, callback=self.parse_httpbin, errback=self.errback_httpbin)
+        #         aux = ''
+        #     else:
+        #         aux += (line + '\n')
+        #         num += 1
+        #         continue
+        salf, n, sign, data = self._get_params(aux)
+        yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
+                             meta={'aux': aux}, callback=self.parse_httpbin, errback=self.errback_httpbin)
+        raise CloseSpider('no datas')
+
+    def _get_params(self, aux):
         salf = str(int(time.time() * 1000) + random.randint(1, 10))
-        n = 'fanyideskweb' + line + salf + "aNPG!!u6sesA>hBAW1@(-"
+        n = 'fanyideskweb' + aux + salf + "aNPG!!u6sesA>hBAW1@(-"
         sign = hashlib.md5(n.encode('utf-8')).hexdigest()
-        f = lambda x: 'zh-CHS' if x == 'zh' else x
         data = {
-            'i': line,
-            'from': f(self.src),
-            'to': f(self.tgt),
+            'i': aux,
+            'from': 'zh-CHS' if self.src == 'zh' else self.src,
+            'to': 'zh-CHS' if self.tgt == 'zh' else self.tgt,
             'smartresult': 'dict',
             'client': 'fanyideskweb',
             'salt': salf,
@@ -107,27 +136,31 @@ class YdApiSpider(Spider):
         return salf, n, sign, data
 
     def parse_httpbin(self, response):
-        line = response.meta.get('line')
-        # -------------- 以下三种情况都会重新打入redis ---------------------
+        aux = response.meta.get('aux')
+        # -------------- 以下三种情况都会重新打入redis，但碰到的可能性不大 ----------------
         try:
             resp = json.loads(response.text)
         except Exception as e:
             self.logger.error(repr(e))
-            self.logger.error('JsonLoadsError on %s', line)
-            self.server.lpush(self.error_key, line.strip())
+            # self.logger.error('JsonLoadsError on %s', aux)
+            for line in aux.split('\n'):
+                self.server.lpush(self.error_key, line.strip())
             return
         if resp.get('errorCode') != 0:
             self.logger.error(repr(response.text))
-            self.server.lpush(self.error_key, line.strip())
+            for line in aux.split('\n'):
+                self.server.lpush(self.error_key, line.strip())
             return
         results = resp.get('translateResult', [])
         if not results:
             self.logger.error(repr(response.text))
-            self.server.lpush(self.error_key, line.strip())
+            for line in aux.split('\n'):
+                self.server.lpush(self.error_key, line.strip())
             return
         for result in results:
             item = YdApiItem()
-            trans = sours = ''
+            trans = ''
+            sours = ''
             for dict_rt in result:
                 t = dict_rt.get('tgt', '')
                 s = dict_rt.get('src', '')
@@ -144,7 +177,11 @@ class YdApiSpider(Spider):
             yield item
 
     def errback_httpbin(self, failure):
+        # log all failures
         self.logger.error(repr(failure))
-        line = failure.request.meta.get('line')
-        self.logger.error('TimeOutError on %s', line)
-        self.server.lpush(self.error_key, line.strip())
+        request = failure.request
+        aux = request.meta.get('aux')
+        # -------------------这种情况会经常遇到---------------------
+        self.logger.error('TimeOutError')
+        for line in aux.split('\n'):
+            self.server.lpush(self.request_key, line.strip())
