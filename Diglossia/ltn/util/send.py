@@ -2,7 +2,7 @@ import codecs
 from info import etl, server
 
 
-class SendMysql(object):
+class Send(object):
     def __init__(self, conn=etl, server=server):
         self.conn = conn
         self.cursor = etl.cursor()
@@ -37,13 +37,13 @@ class SendMysql(object):
                 print(num)
             if not line:
                 continue
-            self.server.lpush(self.request_key, line.strip())
+            self.server.lpush(self.request_key, line.strip().replace('\t', ''))
 
     def close_file(self):
         self.file.close()
 
 
 if __name__ == '__main__':
-    send = SendMysql()
+    send = Send()
     send.send_redis()
     send.close_file()
