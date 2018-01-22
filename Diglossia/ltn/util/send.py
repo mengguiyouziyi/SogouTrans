@@ -45,7 +45,7 @@ class SendMysql(object):
 
 if __name__ == '__main__':
     request_key = '%(name)s:requests' % {'name': 'yd_oral_single_zh2ko'}
-    file = '/search/chenguang/meng/SogouTrans/Diglossia/ltn/util/oral800w.zh'
+    file = '/search/chenguang/meng/documents/SogouTrans/oral800w.zh'
     send = SendMysql(file=file, request_key=request_key)
     send.send_redis()
     send.close_file()

@@ -24,7 +24,7 @@ arr2=(${arr1[0]//_/ })
 arr3=(${arr1[1]//./ })
 src=${arr2[4]}
 tgt=${arr3[0]}
-out_file=$ip"_"$src"2"$tgt".out"
+out_file="/search/chenguang/meng/logs/SogouTrans/"$ip"_"$src"2"$tgt".out"
 for ip in $nips; do
     echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     nohup python $cmd_file $src $tgt $ip > $out_file 2>&1 &
