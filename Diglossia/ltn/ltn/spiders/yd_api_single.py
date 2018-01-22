@@ -74,7 +74,7 @@ class YdApiSpider(Spider):
 
 	@classmethod
 	def from_crawler(cls, crawler, *args, **kwargs):
-		return cls(crawler)
+		return cls(crawler, *args, **kwargs)
 
 	def start_requests(self):
 		while 1:
