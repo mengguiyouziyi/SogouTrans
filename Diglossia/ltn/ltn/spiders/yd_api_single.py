@@ -44,7 +44,7 @@ class YdApiSpider(Spider):
         self.cookie_dict = self.get_cookie()
         self.cookie_key = '%(name)s:cookies' % {'name': self.name}
         self.request_key = '%(name)s:requests' % {'name': 'yd_api'}
-        self.error_key = '%(name)s:error' % {'name': self.name}
+        self.error_key = '%(name)s:error' % {'name': 'yd_news_zh2ko'}
         self.server.sadd(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
         self.cookie = self.server.srandmember(self.cookie_key)
         self.item_keys = ['src', 'srcType', 'zh', 'en', 'ja', 'ko', 'fr', 'ru', 'es', 'pt', 'ara', 'de', 'it', 'url',

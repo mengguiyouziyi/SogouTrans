@@ -17,7 +17,7 @@ if [ -e pids_multi.txt ]; then
     rm pids_multi.txt
 fi
 src='zh'
-tgt='ja'
+tgt='ko'
 for ip in $nips; do
     echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     nohup python ./cmd_yd_api_single.py $src $tgt $ip > $ip"_"$src"-"$tgt".out" 2>&1 &
