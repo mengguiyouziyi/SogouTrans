@@ -33,13 +33,13 @@ class YdApiSpider(Spider):
         'DOWNLOAD_DELAY': 2
     }
 
-    def __init__(self, crawler, src='zh', tgt='ja', *args, **kwargs):
+    def __init__(self, crawler, src, tgt, *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)
         self.url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
         self.ip = self.get_host_ip()
         self.settings = crawler.settings
-        self.src = 'zh' if src == 'zh-CHS' else src
-        self.tgt = 'zh' if tgt == 'zh-CHS' else tgt
+        self.src = src
+        self.tgt = tgt
         self.server = StrictRedis(host=self.settings.get('REDIS_HOST'), decode_responses=True)
         self.cookie_dict = self.get_cookie()
         self.cookie_key = '%(name)s:cookies' % {'name': self.name}
