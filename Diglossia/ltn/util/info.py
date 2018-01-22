@@ -13,10 +13,10 @@ startup_nodes = [{"host": "10.142.97.92", "port": "7000"},
 server = StrictRedis(host='10.146.252.112', decode_responses=True)
 ############################ mysql info ############################
 # etl
-# etl_conf = {'host': '10.142.97.80', 'port': 3306, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
-#             'cursorclass': pymysql.cursors.DictCursor}
-etl_conf = {'host': '10.146.252.112', 'port': 3306, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
+etl_conf = {'host': '10.146.254.57', 'port': 3306, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
             'cursorclass': pymysql.cursors.DictCursor}
+# etl_conf = {'host': '10.146.252.112', 'port': 3306, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
+#             'cursorclass': pymysql.cursors.DictCursor}
 etl = pymysql.connect(**etl_conf)
 etl.select_db('spider')
 # print(etl.get_host_info())
