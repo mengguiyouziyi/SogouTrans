@@ -10,7 +10,8 @@ startup_nodes = [{"host": "10.142.97.92", "port": "7000"},
                  {"host": "10.142.97.92", "port": "7004"},
                  {"host": "10.142.97.92", "port": "7005"}]
 # rc = StrictRedisCluster(startup_nodes=startup_nodes, decode_responses=True)
-server = StrictRedis(host='10.146.252.112', decode_responses=True)
+server = StrictRedis(host='10.146.254.57', decode_responses=True)
+# server = StrictRedis(host='10.146.252.112', decode_responses=True)
 ############################ mysql info ############################
 # etl
 etl_conf = {'host': '10.146.254.57', 'port': 3306, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
