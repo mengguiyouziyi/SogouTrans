@@ -1,4 +1,5 @@
 import codecs
+import sys
 from info import etl, server
 
 
@@ -43,9 +44,13 @@ class SendMysql(object):
         self.file.close()
 
 
-if __name__ == '__main__':
-    request_key = '%(name)s:requests' % {'name': 'yd_oral_single_zh2ko'}
-    file = '/search/chenguang/meng/documents/SogouTrans/oral800w.zh'
+def main(file, request_key):
     send = SendMysql(file=file, request_key=request_key)
     send.send_redis()
     send.close_file()
+
+
+if __name__ == '__main__':
+    file = sys.argv[1]
+    request_key = sys.argv[2]
+    main(file=file, request_key=request_key)
