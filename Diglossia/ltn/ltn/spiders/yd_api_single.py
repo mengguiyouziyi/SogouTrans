@@ -24,7 +24,7 @@ from ltn.items import YdApiItem
 
 
 class YdApiSpider(Spider):
-    name = 'yd_oral_single_zh2ja'
+    name = 'yd_oral_single'
     custom_settings = {
         'DEFAULT_REQUEST_HEADERS': {
             'content-type': "application/x-www-form-urlencoded; charset=UTF-8",
