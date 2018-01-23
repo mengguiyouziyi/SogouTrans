@@ -23,7 +23,6 @@ logger = logging.getLogger(__name__)
 class MysqlPipeline(object):
     def __init__(self, crawler):
         self.crawler = crawler
-        self.item = self.crawler.item
         self.spider = self.crawler.spider
         self.tab = self.spider.name
         settings = self.crawler.settings
@@ -50,12 +49,12 @@ class MysqlPipeline(object):
         sql = """CREATE TABLE IF NOT EXISTS `"""
         sql += self.tab
         sql += """` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',"""
-        for col, desc in self.item.col_list.items():
+        for col, desc in self.spider.col_list.items():
             sql += """`{col}` text COMMENT '{desc}',""".format(col=col, desc=desc)
         sql += """`load_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '落地时间', PRIMARY KEY (`id`),"""
-        for col in self.item.col_index_list:
+        for col in self.spider.col_index_list:
             sql += """KEY `index_{0}` (`{0}`(255))""".format(col)
-        sql += """) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='{tab_desc}';""".format(tab_desc=self.item.tab_desc)
+        sql += """) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='{tab_desc}';""".format(tab_desc=self.spider.tab_desc)
         try:
             self.cursor.execute(sql)
             self.conn.commit()
