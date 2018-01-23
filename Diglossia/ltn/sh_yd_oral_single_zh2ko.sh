@@ -16,7 +16,8 @@ if [ -e pids_multi.txt ]; then
     done
     rm pids_multi.txt
 fi
-self=$BASH_SOURCE
+# get excuting-file name
+self=$(echo $0| awk -F "/" '{ print $NF }')
 self=${self/sh/cmd}
 cmd_file=${self/sh/py}
 arr1=(${self//2/ })

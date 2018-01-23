@@ -7,7 +7,8 @@ pyenv deactivate
 pyenv activate env_comm_Ana3-4.3.0
 cd /search/chenguang/meng/SogouTrans/Diglossia/ltn/util/
 
-self=$BASH_SOURCE
+# get excuting-file name
+self=$(echo $0| awk -F "/" '{ print $NF }')
 o_file=${self/sh/out}
 out_file="/search/chenguang/meng/logs/SogouTrans/"$o_file
 spider_name=${self/send_/}
