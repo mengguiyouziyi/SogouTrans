@@ -3,8 +3,8 @@ from .yd_api import YdApiSpider
 
 
 class YOSzh2koSpider(YdApiSpider):
-    # name = 'yd_oral_single_zh2ko'
+    name = 'yd_oral_single_zh2ko'
 
     def __init__(self, *args, **kwargs):
         super(YOSzh2koSpider, self).__init__(*args, **kwargs)
-        self.name = 'yd_oral_single_zh2ko'
+        # self.name = 'yd_oral_single_zh2ko'
