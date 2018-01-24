@@ -2,10 +2,11 @@ import codecs
 import sys
 import pymysql
 from redis import StrictRedis
-from Diglossia.ltn.ltn.settings import REDIS_HOST, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, MYSQL_PORT
+from SogouTrans.Diglossia.ltn.ltn.settings import REDIS_HOST, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, MYSQL_PORT
 
 
 class SendMysql(object):
+
     def __init__(self, file, request_key, redis_host=REDIS_HOST, mysql_host=MYSQL_HOST, mysql_dbname=MYSQL_DBNAME,
                  mysql_user=MYSQL_USER, mysql_passwd=MYSQL_PASSWD, mysql_port=MYSQL_PORT):
         etl_conf = {'host': mysql_host, 'port': mysql_port, 'user': mysql_user, 'password': mysql_passwd,
