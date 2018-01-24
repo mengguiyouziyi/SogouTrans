@@ -43,6 +43,8 @@ def set_interface(ip):
         if not is_success:
             time.sleep(0.5)
             continue
+        else:
+            break
 
 
 if __name__ == "__main__":
