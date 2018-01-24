@@ -9,7 +9,7 @@ ffpath = dirname(fpath)
 sys.path.append(fpath)
 sys.path.append(ffpath)
 
-from ltn.ltn.settings import REDIS_HOST, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, MYSQL_PORT
+from ltn.settings import REDIS_HOST, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, MYSQL_PORT
 
 
 class SendMysql(object):
