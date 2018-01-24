@@ -48,7 +48,7 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 1.9
+DOWNLOAD_DELAY = 1.8
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # CONCURRENT_REQUESTS_PER_IP = 16
@@ -61,11 +61,11 @@ DOWNLOAD_DELAY = 1.9
 LOG_LEVEL = 'INFO'
 LOG_STDOUT = True
 
-RETRY_TIMES = 5
+RETRY_TIMES = 2
 RETRY_HTTP_CODES = [500, 502, 503, 504, 408, 429]
 # REDIRECT_ENABLED = False
 
-DOWNLOAD_TIMEOUT = 60
+DOWNLOAD_TIMEOUT = 30
 
 
 USER_AGENT_CHOICES = [
