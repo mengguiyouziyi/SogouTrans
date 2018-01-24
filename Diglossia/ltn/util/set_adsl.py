@@ -1,6 +1,7 @@
 #!/bin/env python
 import sys
 import socket
+import time
 from urllib.request import urlopen
 
 # set html header
@@ -40,6 +41,7 @@ def set_interface(ip):
             sys.exit(1)
         is_success = test_interface()
         if not is_success:
+            time.sleep(0.5)
             continue
 
 
