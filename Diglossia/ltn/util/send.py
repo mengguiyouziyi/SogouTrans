@@ -2,7 +2,7 @@ import codecs
 import sys
 import pymysql
 from redis import StrictRedis
-from SogouTrans.Diglossia.ltn.ltn.settings import REDIS_HOST, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, MYSQL_PORT
+from ltn.ltn.settings import REDIS_HOST, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, MYSQL_PORT
 
 
 class SendMysql(object):
