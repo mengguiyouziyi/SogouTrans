@@ -33,11 +33,14 @@ def set_interface(ip):
 
     socket.socket = bind_socket
     print("virtual ip: %s" % (ip))
-    is_success = test_interface()
-    if not is_success:
+    n = 4
+    while 1:
+        n -= 1
+        if n <= 0:
+            sys.exit(1)
         is_success = test_interface()
         if not is_success:
-            sys.exit(1)
+            continue
 
 
 if __name__ == "__main__":
