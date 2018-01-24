@@ -34,7 +34,7 @@ def set_interface(ip):
 
     socket.socket = bind_socket
     print("virtual ip: %s" % (ip))
-    n = 4
+    n = 6
     while 1:
         n -= 1
         if n <= 0:
