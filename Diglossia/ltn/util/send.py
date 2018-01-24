@@ -1,7 +1,14 @@
 import codecs
-import sys
 import pymysql
 from redis import StrictRedis
+import sys
+from os.path import dirname, abspath
+
+fpath = abspath(dirname(__file__))
+ffpath = dirname(fpath)
+sys.path.append(fpath)
+sys.path.append(ffpath)
+
 from ltn.ltn.settings import REDIS_HOST, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, MYSQL_PORT
 
 
