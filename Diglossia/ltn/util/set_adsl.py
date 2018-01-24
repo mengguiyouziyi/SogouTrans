@@ -14,12 +14,14 @@ def test_interface():
         html = rslt.read()
         ret_ip = html.rstrip()
         print("return ip=%s" % (ret_ip))
+        return True
     except Exception as FF:
         print("Test interface error, exit ... \n")
-        sys.exit(1)
+        return
+
+    # set interface
 
 
-# set interface
 def set_interface(ip):
     true_socket = socket.socket
 
@@ -31,7 +33,11 @@ def set_interface(ip):
 
     socket.socket = bind_socket
     print("virtual ip: %s" % (ip))
-    test_interface()
+    is_success = test_interface()
+    if not is_success:
+        is_success = test_interface()
+        if not is_success:
+            sys.exit(1)
 
 
 if __name__ == "__main__":

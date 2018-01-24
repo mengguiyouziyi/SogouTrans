@@ -1,13 +1,18 @@
 import codecs
 import sys
-from info import etl, server
+import pymysql
+from redis import StrictRedis
+from Diglossia.ltn.ltn.settings import REDIS_HOST, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, MYSQL_PORT
 
 
 class SendMysql(object):
-    def __init__(self, file, request_key, conn=etl, server=server):
-        self.conn = conn
-        self.cursor = etl.cursor()
-        self.server = server
+    def __init__(self, file, request_key, redis_host=REDIS_HOST, mysql_host=MYSQL_HOST, mysql_dbname=MYSQL_DBNAME,
+                 mysql_user=MYSQL_USER, mysql_passwd=MYSQL_PASSWD, mysql_port=MYSQL_PORT):
+        etl_conf = {'host': mysql_host, 'port': mysql_port, 'user': mysql_user, 'password': mysql_passwd,
+                    'charset': 'utf8', 'db': mysql_dbname, 'cursorclass': pymysql.cursors.DictCursor}
+        self.conn = pymysql.connect(**etl_conf)
+        self.cursor = self.conn.cursor()
+        self.server = StrictRedis(host=redis_host, decode_responses=True)
         self.request_key = request_key
         self.file = codecs.open(file, 'r', 'utf-8')
 
