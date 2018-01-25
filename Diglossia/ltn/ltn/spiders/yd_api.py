@@ -16,6 +16,7 @@ import time
 import socket
 import random
 import requests
+from collections import OrderedDict
 from redis import StrictRedis
 from urllib.parse import urlencode
 from scrapy.spiders import Spider
@@ -30,15 +31,16 @@ class YdApiSpider(Spider):
             'content-type': "application/x-www-form-urlencoded; charset=UTF-8",
             'referer': "http://fanyi.youdao.com/",
         },
-        'DOWNLOAD_DELAY': 2
+        'DOWNLOAD_DELAY': 1.7
     }
 
     def __init__(self, crawler, src, tgt, *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)
-        self.col_list = {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语', 'fr': '法语',
+        self.col_comm = {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语', 'fr': '法语',
                          'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语', 'it': '意大利语', 'url': 'url',
                          'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
-        self.col_index_list = ['src']
+        self.col_list = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
+        self.col_index_list = ['src']  # 为创建mysql表格的index而设置的属性
         self.src = src
         self.tgt = tgt
         self.url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
@@ -51,9 +53,9 @@ class YdApiSpider(Spider):
         self.error_key = '%(name)s:errors' % {'name': self.name}
         self.server.sadd(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
         self.cookie = self.server.srandmember(self.cookie_key)
-        self.item_keys = ['src', 'srcType', 'zh', 'en', 'ja', 'ko', 'fr', 'ru', 'es', 'pt', 'ara', 'de', 'it', 'url',
-                          'project', 'spider', 'server']
-        self.d = {}.fromkeys(self.item_keys, '')
+        # self.item_keys = ['src', 'srcType', 'zh', 'en', 'ja', 'ko', 'fr', 'ru', 'es', 'pt', 'ara', 'de', 'it', 'url',
+        #                   'project', 'spider', 'server']
+        self.d = {}.fromkeys(self.col_list.keys(), '')
 
     def _get_cookie(self):
         url = 'http://fanyi.youdao.com/'
@@ -151,4 +153,4 @@ class YdApiSpider(Spider):
         self.logger.error(repr(failure))
         line = failure.request.meta.get('line')
         self.logger.error('TimeOutError on %s', line)
-        self.server.lpush(self.error_key, line.strip())
+        self.server.lpush(self.request_key, line.strip())

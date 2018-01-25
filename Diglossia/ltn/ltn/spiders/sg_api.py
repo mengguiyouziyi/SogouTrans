@@ -45,7 +45,6 @@ class SgApiSpider(Spider):
         self.server = StrictRedis(host=self.settings.get('REDIS_HOST'), decode_responses=True)
         self.request_key = '%(name)s:requests' % {'name': self.name}
         self.error_key = '%(name)s:errors' % {'name': self.name}
-        self.cookie = self.server.srandmember(self.cookie_key)
         self.d = {}.fromkeys(self.col_list.keys(), '')
 
     def _get_host_ip(self):
