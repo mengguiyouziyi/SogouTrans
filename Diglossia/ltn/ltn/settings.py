@@ -30,8 +30,8 @@ NEWSPIDER_MODULE = 'ltn.spiders'
 
 # Specify the host and port to use when connecting to Redis (optional).
 # REDIS_HOST = 'localhost'
-# REDIS_HOST = '10.146.252.112'
-REDIS_HOST = '10.146.254.57'
+REDIS_HOST = '10.146.252.112'
+# REDIS_HOST = '10.146.254.57'
 REDIS_PORT = 6379
 
 # Don't cleanup redis queues, allows to pause/resume crawls.
@@ -137,8 +137,8 @@ ITEM_PIPELINES = {
 }
 
 # Mysql数据库的配置信息
-MYSQL_HOST = '10.146.254.57'
-# MYSQL_HOST = '10.146.252.112'
+# MYSQL_HOST = '10.146.254.57'
+MYSQL_HOST = '10.146.252.112'
 MYSQL_DBNAME = 'spider'  # 数据库名字，请修改
 MYSQL_USER = 'spider'  # 数据库账号，请修改
 MYSQL_PASSWD = 'chenguang'  # 数据库密码，请修改
