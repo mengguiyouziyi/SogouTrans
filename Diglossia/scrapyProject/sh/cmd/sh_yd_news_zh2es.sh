@@ -18,16 +18,23 @@ if [ -e pids_multi.txt ]; then
 fi
 # get excuting-file name
 self=$(echo $0| awk -F "/" '{ print $NF }')
-self=${self/sh/cmd}
-cmd_file=${self/sh/py}
-arr1=(${self//2/ })
-arr2=(${arr1[0]//_/ })
-arr3=(${arr1[1]//./ })
-src=${arr2[3]}
-tgt=${arr3[0]}
+spider_name=${self/.sh/}
+spider_name=${spider_name/sh_/}
+cmd_file="cmd_yd_api"
+#self=${self/sh/cmd}
+#cmd_file=${self/sh/py}
+#arr1=(${self//2/ })
+#arr2=(${arr1[0]//_/ })
+#arr3=(${arr1[1]//./ })
+#src=${arr2[3]}
+#tgt=${arr3[0]}
+echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+o_file="/search/chenguang/meng/logs/SogouTrans/"$spider_name"_localhost.out"
+nohup python $cmd_file $spider_name > $o_file 2>&1 &
 
 for ip in $nips; do
     echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    out_file="/search/chenguang/meng/logs/SogouTrans/"$ip"_"$src"2"$tgt".out"
-    nohup python $cmd_file $src $tgt $ip > $out_file 2>&1 &
+    i_p=${ip//./_}
+    out_file="/search/chenguang/meng/logs/SogouTrans/"$spider_name"_"$i_p".out"
+    nohup python $cmd_file $spider_name $ip > $out_file 2>&1 &
 done
