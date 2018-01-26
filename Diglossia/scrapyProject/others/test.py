@@ -9,10 +9,10 @@ from redis import StrictRedis
 s = urlopen('http://www.baidu.com')
 print(s)
 
-server = StrictRedis(host='10.142.237.97', port=40111, decode_responses=True)
-server.sadd('aaaaa', 'aaaaa')
-v = server.spop('aaaaa')
-print(v)
+# server = StrictRedis(host='10.142.237.97', port=40111, decode_responses=True)
+# server.sadd('aaaaa', 'aaaaa')
+# v = server.spop('aaaaa')
+# print(v)
 
 etl_conf = {'host': '10.142.237.97', 'port': 40112, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
             'db': 'spider', 'cursorclass': pymysql.cursors.DictCursor}
