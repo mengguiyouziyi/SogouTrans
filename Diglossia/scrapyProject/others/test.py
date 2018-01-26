@@ -9,14 +9,13 @@ set_adsl.set_interface('10.146.252.120')
 s = urlopen('http://www.baidu.com')
 print(s)
 
-server = StrictRedis(host='106.39.246.223', port=40111, decode_responses=True)
+server = StrictRedis(host='10.142.237.97', port=40111, decode_responses=True)
 server.sadd('aaaaa', 'aaaaa')
 v = server.spop('aaaaa')
 print(v)
 
-etl_conf = {'host': '106.39.246.223', 'port': 40112, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
-            'db': 'spider',
-            'cursorclass': pymysql.cursors.DictCursor}
+etl_conf = {'host': '10.142.237.97', 'port': 40112, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
+            'db': 'spider', 'cursorclass': pymysql.cursors.DictCursor}
 etl = pymysql.connect(**etl_conf)
 cur = etl.cursor()
 sql = """CREATE TABLE `yd_oral_single_zh2ko` (
