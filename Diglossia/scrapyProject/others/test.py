@@ -10,8 +10,8 @@ set_adsl.set_interface(host1)
 s = urlopen('http://www.baidu.com')
 print(s)
 
-# host2 = '106.39.246.223'
-host2 = '10.152.237.97'
+host2 = '106.39.246.223'
+# host2 = '10.152.237.97'
 
 # server = StrictRedis(host=host2, port=40111, decode_responses=True)
 # server.sadd('aaaaa', 'aaaaa')
