@@ -6,6 +6,7 @@ from scrapy.cmdline import execute
 base_path = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 sys.path.append(base_path)
 from util import set_adsl
+from .scrapyProject.settings import SPIDER_CONF
 
 # file = os.path.basename(__file__).replace('cmd_', '').replace('.py', '')
 if __name__ == '__main__':
