@@ -13,12 +13,12 @@ print(s)
 host2 = '106.39.246.223'
 # host2 = '10.152.237.97'
 
-# server = StrictRedis(host=host2, port=40111, decode_responses=True)
-# server.sadd('aaaaa', 'aaaaa')
-# v = server.spop('aaaaa')
-# print(v)
+server = StrictRedis(host=host2, port=50111, decode_responses=True)
+server.sadd('aaaaa', 'aaaaa')
+v = server.spop('aaaaa')
+print(v)
 
-etl_conf = {'host': host2, 'port': 40112, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
+etl_conf = {'host': host2, 'port': 50112, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
             'db': 'spider', 'cursorclass': pymysql.cursors.DictCursor}
 etl = pymysql.connect(**etl_conf)
 cur = etl.cursor()
