@@ -11,7 +11,7 @@ host1 = '10.146.253.44'
 s = urlopen('http://www.baidu.com')
 print(s)
 
-host2 = '106.39.246.223'
+host2 = '10.142.237.97'
 # host2 = '10.152.237.97'
 
 server = StrictRedis(host=host2, port=50111, decode_responses=True)
