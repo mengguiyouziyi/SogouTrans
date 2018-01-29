@@ -3,9 +3,9 @@ import set_adsl
 from urllib.request import urlopen
 from redis import StrictRedis
 
-host1 = '10.146.252.120'
+host1 = '10.146.253.43'
 # set_adsl.set_interface(sys.argv[1])
-# set_adsl.set_interface(host1)
+set_adsl.set_interface(host1)
 
 s = urlopen('http://www.baidu.com')
 print(s)
