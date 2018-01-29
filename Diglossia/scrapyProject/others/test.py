@@ -1,5 +1,6 @@
 import pymysql
 import set_adsl
+import socket
 from urllib.request import urlopen
 from redis import StrictRedis
 
@@ -49,3 +50,17 @@ sql = """CREATE TABLE `yd_oral_single_zh2ko` (
 cur.execute(sql)
 etl.commit()
 print('create')
+
+
+def _get_host_ip():
+    """
+    获取当前网络环境的ip地址
+    :return:
+    """
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+    finally:
+        s.close()
+    return ip

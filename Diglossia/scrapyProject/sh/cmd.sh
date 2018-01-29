@@ -12,7 +12,7 @@ cd /search/chenguang/meng/SogouTrans/Diglossia/scrapyProject/
 #spider_name=${self/.sh/}
 #spider_name=${spider_name/sh_/}
 spider_name=$1
-cmd_file="main.py"
+cmd_file="cmd.py"
 #self=${self/sh/cmd}
 #cmd_file=${self/sh/py}
 #arr1=(${self//2/ })
@@ -21,9 +21,9 @@ cmd_file="main.py"
 #src=${arr2[3]}
 #tgt=${arr3[0]}
 
-echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-o_file="/search/chenguang/meng/logs/SogouTrans/"$spider_name"_localhost.out"
-nohup python $cmd_file $spider_name > $o_file 2>&1 &
+#echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+#o_file="/search/chenguang/meng/logs/SogouTrans/"$spider_name"_localhost.out"
+#nohup python $cmd_file $spider_name > $o_file 2>&1 &
 
 # -------------------------------- 获取虚拟ip -----------------------------------
 nips=`ifconfig | grep "eth1.\d\d\d" -P -A 1 | grep "inet addr" | perl -ne "s/.*addr:| Bcast:.*//g;print;"`

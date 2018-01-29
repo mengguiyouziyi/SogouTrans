@@ -11,6 +11,7 @@ sys.path.append(ffpath)
 
 from scrapyProject.settings import (REDIS_HOST, REDIS_PORT, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD,
                                     MYSQL_PORT, SPIDER_CONF)
+from .set_adsl import set_interface
 
 
 class Send(object):
@@ -70,6 +71,7 @@ def main(file, spider_name):
 
 
 if __name__ == '__main__':
+    set_interface('10.146.253.44')
     spider_name = sys.argv[1]
     file = SPIDER_CONF.get(spider_name).get('in_file')
     file = '/search/chenguang/meng/documents/SogouTrans/' + file
