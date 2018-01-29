@@ -31,7 +31,7 @@ NEWSPIDER_MODULE = 'scrapyProject.spiders'
 
 # Specify the host and port to use when connecting to Redis (optional).
 # REDIS_HOST = 'localhost'
-REDIS_HOST = '106.39.246.223'
+REDIS_HOST = '10.142.237.97'
 # REDIS_HOST = '10.146.252.112'
 # REDIS_HOST = '10.146.254.57'
 REDIS_PORT = 50111
@@ -140,7 +140,7 @@ ITEM_PIPELINES = {
 # Mysql数据库的配置信息
 # MYSQL_HOST = '10.146.254.57'
 # MYSQL_HOST = '10.146.252.112'
-MYSQL_HOST = '106.39.246.223'
+MYSQL_HOST = '10.142.237.97'
 MYSQL_DBNAME = 'spider'  # 数据库名字，请修改
 MYSQL_USER = 'spider'  # 数据库账号，请修改
 MYSQL_PASSWD = 'chenguang'  # 数据库密码，请修改
