@@ -1,9 +1,9 @@
-import os
 import sys
+from os.path import dirname, abspath
 
 from scrapy.cmdline import execute
 
-base_path = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+base_path = abspath(dirname(__file__))
 sys.path.append(base_path)
 from .util import set_adsl
 from .scrapyProject.settings import SPIDER_CONF

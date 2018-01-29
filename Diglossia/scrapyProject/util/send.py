@@ -5,17 +5,18 @@ import sys
 from os.path import dirname, abspath
 
 fpath = abspath(dirname(__file__))
-ffpath = dirname(fpath)
+# ffpath = dirname(fpath)
 sys.path.append(fpath)
-sys.path.append(ffpath)
+# sys.path.append(ffpath)
 
-from ..scrapyProject.settings import REDIS_HOST, REDIS_PORT, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, MYSQL_PORT, \
-    SPIDER_CONF
+from ..scrapyProject.settings import REDIS_HOST, REDIS_PORT, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, \
+    MYSQL_PORT, SPIDER_CONF
 
 
 class Send(object):
 
-    def __init__(self, file, spider_name, redis_host=REDIS_HOST, redis_port=REDIS_PORT, mysql_host=MYSQL_HOST, mysql_dbname=MYSQL_DBNAME,
+    def __init__(self, file, spider_name, redis_host=REDIS_HOST, redis_port=REDIS_PORT, mysql_host=MYSQL_HOST,
+                 mysql_dbname=MYSQL_DBNAME,
                  mysql_user=MYSQL_USER, mysql_passwd=MYSQL_PASSWD, mysql_port=MYSQL_PORT):
         etl_conf = {'host': mysql_host, 'port': mysql_port, 'user': mysql_user, 'password': mysql_passwd,
                     'charset': 'utf8', 'db': mysql_dbname, 'cursorclass': pymysql.cursors.DictCursor}
