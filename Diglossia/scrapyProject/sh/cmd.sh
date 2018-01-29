@@ -12,7 +12,7 @@ cd /search/chenguang/meng/SogouTrans/Diglossia/scrapyProject/
 #spider_name=${self/.sh/}
 #spider_name=${spider_name/sh_/}
 spider_name=$1
-cmd_file="cmd_yd_api"
+cmd_file="main.py"
 #self=${self/sh/cmd}
 #cmd_file=${self/sh/py}
 #arr1=(${self//2/ })

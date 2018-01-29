@@ -9,19 +9,20 @@ ffpath = dirname(fpath)
 sys.path.append(fpath)
 sys.path.append(ffpath)
 
-from scrapyProject.settings import REDIS_HOST, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, MYSQL_PORT
+from ..scrapyProject.settings import REDIS_HOST, REDIS_PORT, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, MYSQL_PORT, \
+    SPIDER_CONF
 
 
-class SendMysql(object):
+class Send(object):
 
-    def __init__(self, file, request_key, redis_host=REDIS_HOST, mysql_host=MYSQL_HOST, mysql_dbname=MYSQL_DBNAME,
+    def __init__(self, file, spider_name, redis_host=REDIS_HOST, redis_port=REDIS_PORT, mysql_host=MYSQL_HOST, mysql_dbname=MYSQL_DBNAME,
                  mysql_user=MYSQL_USER, mysql_passwd=MYSQL_PASSWD, mysql_port=MYSQL_PORT):
         etl_conf = {'host': mysql_host, 'port': mysql_port, 'user': mysql_user, 'password': mysql_passwd,
                     'charset': 'utf8', 'db': mysql_dbname, 'cursorclass': pymysql.cursors.DictCursor}
         self.conn = pymysql.connect(**etl_conf)
         self.cursor = self.conn.cursor()
-        self.server = StrictRedis(host=redis_host, decode_responses=True)
-        self.request_key = request_key
+        self.server = StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
+        self.request_key = spider_name + ':requests'
         self.file = codecs.open(file, 'r', 'utf-8')
 
     def send_mysql(self):
@@ -57,13 +58,14 @@ class SendMysql(object):
         self.file.close()
 
 
-def main(file, request_key):
-    send = SendMysql(file=file, request_key=request_key)
+def main(file, spider_name):
+    send = Send(file=file, spider_name=spider_name)
     send.send_redis()
     send.close_file()
 
 
 if __name__ == '__main__':
-    file = sys.argv[1]
-    request_key = sys.argv[2]
-    main(file=file, request_key=request_key)
+    spider_name = sys.argv[1]
+    file = SPIDER_CONF.get(spider_name).get('in_file')
+    file = '/search/chenguang/meng/documents/SogouTrans/' + file
+    main(file=file, spider_name=spider_name)

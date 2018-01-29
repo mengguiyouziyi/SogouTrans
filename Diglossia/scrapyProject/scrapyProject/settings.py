@@ -10,6 +10,7 @@ path = dirname(os.path.abspath(dirname(__file__)))
 sys.path.append(path)
 sys.path.append(base_path)
 sys.path.append(father_path)
+from collections import OrderedDict
 
 BOT_NAME = 'scrapyProject'
 
@@ -32,7 +33,7 @@ NEWSPIDER_MODULE = 'scrapyProject.spiders'
 # REDIS_HOST = 'localhost'
 REDIS_HOST = '10.146.252.112'
 # REDIS_HOST = '10.146.254.57'
-REDIS_PORT = 6379
+REDIS_PORT = 50111
 
 # Don't cleanup redis queues, allows to pause/resume crawls.
 SCHEDULER_PERSIST = True
@@ -48,7 +49,7 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 1.8
+DOWNLOAD_DELAY = 1.7
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # CONCURRENT_REQUESTS_PER_IP = 16
@@ -65,7 +66,7 @@ RETRY_TIMES = 2
 RETRY_HTTP_CODES = [500, 502, 503, 504, 408, 429]
 # REDIRECT_ENABLED = False
 
-DOWNLOAD_TIMEOUT = 30
+DOWNLOAD_TIMEOUT = 50
 
 USER_AGENT_CHOICES = [
     'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0_3 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Mobile/15A432',
@@ -137,11 +138,12 @@ ITEM_PIPELINES = {
 
 # Mysql数据库的配置信息
 # MYSQL_HOST = '10.146.254.57'
-MYSQL_HOST = '10.146.252.112'
+# MYSQL_HOST = '10.146.252.112'
+MYSQL_HOST = '106.39.246.223'
 MYSQL_DBNAME = 'spider'  # 数据库名字，请修改
 MYSQL_USER = 'spider'  # 数据库账号，请修改
 MYSQL_PASSWD = 'chenguang'  # 数据库密码，请修改
-MYSQL_PORT = 3306  # 数据库端口，在dbhelper中使用
+MYSQL_PORT = 50112  # 数据库端口，在dbhelper中使用
 
 REDIS_CLUSTER_NODES = [
     {"host": "10.142.97.92", "port": "7000"},
@@ -154,4 +156,15 @@ REDIS_CLUSTER_NODES = [
 
 TELNETCONSOLE_ENABLED = False
 
-SPIDER_CONF = {'yd_news_zh2es': {'in_file': 'news1617.zh', 'args': ['src', 'tgt']}}
+SPIDER_CONF = {
+    'yd_news_zh2es': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'es'})},
+    'yd_news_zh2fr': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'fr'})},
+    'yd_news_zh2ru': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ru'})},
+    'yd_news_zh2ko': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'})},
+    'yd_news_zh2ja': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ja'})},
+    'yd_oral_zh2es': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'es'})},
+    'yd_oral_zh2fr': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'fr'})},
+    'yd_oral_zh2ru': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ru'})},
+    'yd_oral_zh2ko': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'})},
+    'yd_oral_zh2ja': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ja'})},
+}
