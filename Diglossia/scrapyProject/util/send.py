@@ -17,8 +17,12 @@ class Send(object):
 
     def __init__(self, file, spider_name, redis_host=REDIS_HOST, redis_port=REDIS_PORT, mysql_host=MYSQL_HOST,
                  mysql_dbname=MYSQL_DBNAME, mysql_user=MYSQL_USER, mysql_passwd=MYSQL_PASSWD, mysql_port=MYSQL_PORT):
-        etl_conf = {'host': mysql_host, 'port': mysql_port, 'user': mysql_user, 'password': mysql_passwd,
-                    'charset': 'utf8', 'db': mysql_dbname, 'cursorclass': pymysql.cursors.DictCursor}
+        # etl_conf = {'host': mysql_host, 'port': mysql_port, 'user': mysql_user, 'password': mysql_passwd,
+        #             'charset': 'utf8', 'db': mysql_dbname, 'cursorclass': pymysql.cursors.DictCursor}
+        # print(etl_conf)
+        host2 = '106.39.246.223'
+        etl_conf = {'host': host2, 'port': 50112, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
+                    'db': 'spider', 'cursorclass': pymysql.cursors.DictCursor}
         print(etl_conf)
         self.conn = pymysql.connect(**etl_conf)
         self.cursor = self.conn.cursor()
