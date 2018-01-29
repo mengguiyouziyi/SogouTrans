@@ -21,7 +21,7 @@ class Send(object):
         etl_conf1 = {'host': mysql_host, 'port': mysql_port, 'user': mysql_user, 'password': mysql_passwd,
                     'charset': 'utf8', 'db': mysql_dbname, 'cursorclass': pymysql.cursors.DictCursor}
         print(etl_conf1)
-        host = '106.39.246.223'
+        host = '10.142.237.97'
         etl_conf = {'host': host, 'port': 50112, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
                     'db': 'spider', 'cursorclass': pymysql.cursors.DictCursor}
         print(etl_conf)
