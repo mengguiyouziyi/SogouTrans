@@ -9,8 +9,8 @@ from os.path import dirname, abspath
 # sys.path.append(fpath)
 # sys.path.append(ffpath)
 
-from ..scrapyProject.settings import REDIS_HOST, REDIS_PORT, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, \
-    MYSQL_PORT, SPIDER_CONF
+from ..scrapyProject.settings import (REDIS_HOST, REDIS_PORT, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD,
+                                      MYSQL_PORT, SPIDER_CONF)
 
 
 class Send(object):
