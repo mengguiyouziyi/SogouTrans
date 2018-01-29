@@ -4,9 +4,9 @@ from redis import StrictRedis
 import sys
 from os.path import dirname, abspath
 
-fpath = abspath(dirname(__file__))
+# fpath = abspath(dirname(__file__))
 # ffpath = dirname(fpath)
-sys.path.append(fpath)
+# sys.path.append(fpath)
 # sys.path.append(ffpath)
 
 from ..scrapyProject.settings import REDIS_HOST, REDIS_PORT, MYSQL_HOST, MYSQL_DBNAME, MYSQL_USER, MYSQL_PASSWD, \
