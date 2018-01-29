@@ -19,6 +19,7 @@ class Send(object):
                  mysql_dbname=MYSQL_DBNAME, mysql_user=MYSQL_USER, mysql_passwd=MYSQL_PASSWD, mysql_port=MYSQL_PORT):
         etl_conf = {'host': mysql_host, 'port': mysql_port, 'user': mysql_user, 'password': mysql_passwd,
                     'charset': 'utf8', 'db': mysql_dbname, 'cursorclass': pymysql.cursors.DictCursor}
+        print(etl_conf)
         self.conn = pymysql.connect(**etl_conf)
         self.cursor = self.conn.cursor()
         self.server = StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
