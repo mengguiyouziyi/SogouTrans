@@ -36,7 +36,10 @@ class MysqlPipeline(object):
             cursorclass=pymysql.cursors.DictCursor,
             # use_unicode=False,
         )
-        self.conn = pymysql.connect(**dbparams)
+        self.conn = self._conn_mysql(dbparams)
+        while not self.conn:
+            logger.warning('Reconnect mysql~~~')
+            self.conn = self._conn_mysql(dbparams)
         self.cursor = self.conn.cursor()
         if not self.create():
             self.crawler.engine.close_spider(self.spider, 'CreateTableError on {}'.format(self.tab))
@@ -44,6 +47,13 @@ class MysqlPipeline(object):
         self.col_list = self._get_column()[1:-1]
         self.col_str = ','.join(self.col_list)
         self.val_str = self._handle_str(len(self.col_list))
+
+    def _conn_mysql(self, p):
+        try:
+            conn = pymysql.connect(**p)
+            return conn
+        except:
+            return
 
     def create(self):
         sql = """CREATE TABLE IF NOT EXISTS `"""
