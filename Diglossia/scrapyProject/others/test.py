@@ -3,7 +3,7 @@ import set_adsl
 from urllib.request import urlopen
 from redis import StrictRedis
 
-host1 = '10.146.253.43'
+host1 = '10.146.253.44'
 # set_adsl.set_interface(sys.argv[1])
 set_adsl.set_interface(host1)
 
