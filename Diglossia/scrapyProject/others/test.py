@@ -25,7 +25,6 @@ etl = pymysql.connect(**etl_conf)
 print(etl.get_host_info())
 print(etl.get_proto_info())
 print(etl.get_server_info())
-print(etl.__getattribute__())
 # cur = etl.cursor()
 # sql = """CREATE TABLE `yd_oral_single_zh2ko` (
 #   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
