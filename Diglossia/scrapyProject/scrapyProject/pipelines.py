@@ -38,24 +38,28 @@ class MysqlPipeline(object):
         )
         self.conn = pymysql.connect(**dbparams)
         self.cursor = self.conn.cursor()
-        sql = """select host from information_schema.processlist WHERE ID=connection_id();"""
-        self.cursor.execute(sql)
-        result = self.cursor.fetchone()
-        print(result)
+        host1 = self._get_mysql_host(cursor=self.cursor)
         self.conn.ping(True)
-        # while not self.conn:
-        #     logger.warning('Reconnect mysql~~~')
-        #     self.conn = self._conn_mysql(dbparams)
         self.cursor = self.conn.cursor()
-        self.cursor.execute(sql)
-        result = self.cursor.fetchone()
-        print(result)
+        host2 = self._get_mysql_host(cursor=self.cursor)
+        if host1 != host2:
+            id_sql = """select ID from information_schema.processlist WHERE host=%s;""" % host1
+            self.cursor.execute(id_sql)
+            id = self.cursor.fetchone().get('ID')
+            self.cursor.execute("kill " + id)
+            self.conn.commit()
+
         if not self.create():
             self.crawler.engine.close_spider(self.spider, 'CreateTableError on {}'.format(self.tab))
-
         self.col_list = self._get_column()[1:-1]
         self.col_str = ','.join(self.col_list)
         self.val_str = self._handle_str(len(self.col_list))
+
+    def _get_mysql_host(self, cursor):
+        sql = """select host from information_schema.processlist WHERE ID=connection_id();"""
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        return result.get('host')
 
     def create(self):
         sql = """CREATE TABLE IF NOT EXISTS `"""
@@ -67,7 +71,7 @@ class MysqlPipeline(object):
         for col in self.spider.col_index_list:
             sql += """KEY `index_{0}` (`{0}`(255))""".format(col)
         sql += """) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='{tab_desc}';""".format(tab_desc=self.spider.tab_desc)
-        self.conn.ping(True)
+        # self.conn.ping(True)
         try:
             self.cursor.execute(sql)
             self.conn.commit()
@@ -88,7 +92,7 @@ class MysqlPipeline(object):
         """
         sql = """select group_concat(column_name) from information_schema.columns WHERE table_name = '{tab}' and table_schema = 'spider'""".format(
             tab=self.tab)
-        self.conn.ping(True)
+        # self.conn.ping(True)
         try:
             self.cursor.execute(sql)
         except Exception as e:
@@ -116,7 +120,7 @@ class MysqlPipeline(object):
     def process_item(self, item, spider):
         in_sql = """insert into {tab} ({col}) VALUES ({val})""".format(tab=self.tab, col=self.col_str, val=self.val_str)
         in_args = [item[i] for i in self.col_list]
-        self.conn.ping(True)
+        # self.conn.ping(True)
         try:
             self.cursor.execute(in_sql, in_args)
             self.conn.commit()
