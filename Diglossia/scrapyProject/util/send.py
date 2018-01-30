@@ -25,9 +25,9 @@ class Send(object):
         #             'db': 'spider', 'cursorclass': pymysql.cursors.DictCursor}
         # self.conn = pymysql.connect(**etl_conf)
         # self.cursor = self.conn.cursor()
-        self.server = StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
+        # self.server = StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
 
-        # self.server = StrictRedis(host='10.142.237.97', port=50111, decode_responses=True)
+        self.server = StrictRedis(host='106.39.246.223', port=50111, decode_responses=True)
         self.request_key = spider_name + ':requests'
         self.file = codecs.open(file, 'r', 'utf-8')
 
@@ -71,7 +71,7 @@ def main(file, spider_name):
 
 
 if __name__ == '__main__':
-    # set_interface('10.146.252.117')
+    set_interface('10.146.252.117')
     spider_name = sys.argv[1]
     file = SPIDER_CONF.get(spider_name).get('in_file')
     file = '/search/chenguang/meng/documents/SogouTrans/' + file
