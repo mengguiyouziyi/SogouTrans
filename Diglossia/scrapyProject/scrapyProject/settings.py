@@ -31,8 +31,8 @@ NEWSPIDER_MODULE = 'scrapyProject.spiders'
 
 # Specify the host and port to use when connecting to Redis (optional).
 # REDIS_HOST = 'localhost'
-# REDIS_HOST = '106.39.246.223'
-REDIS_HOST = '10.142.237.97'
+REDIS_HOST = '106.39.246.223'
+# REDIS_HOST = '10.142.237.97'
 # REDIS_HOST = '10.146.252.112'
 # REDIS_HOST = '10.146.254.57'
 REDIS_PORT = 50111

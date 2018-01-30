@@ -19,12 +19,12 @@ class Send(object):
                  mysql_dbname=MYSQL_DBNAME, mysql_user=MYSQL_USER, mysql_passwd=MYSQL_PASSWD, mysql_port=MYSQL_PORT):
         # etl_conf = {'host': mysql_host, 'port': mysql_port, 'user': mysql_user, 'password': mysql_passwd,
         #             'charset': 'utf8', 'db': mysql_dbname, 'cursorclass': pymysql.cursors.DictCursor}
-        host = '10.142.237.97'
+        # host = '10.142.237.97'
         # etl_conf = {'host': host, 'port': 50112, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
         #             'db': 'spider', 'cursorclass': pymysql.cursors.DictCursor}
         # self.conn = pymysql.connect(**etl_conf)
         # self.cursor = self.conn.cursor()
-        self.server = StrictRedis(host=host, port=50111, decode_responses=True)
+        self.server = StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
         self.request_key = spider_name + ':requests'
         self.file = codecs.open(file, 'r', 'utf-8')
 
