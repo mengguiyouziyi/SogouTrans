@@ -116,14 +116,15 @@ class MysqlPipeline(object):
                 cursor.execute("kill " + process_id)
                 self.conn.commit()
             cursor.execute(sql)
+            results = cursor.fetchall()
+            col_str = results[0]['group_concat(column_name)']
+            col_list = col_str.split(',')
+            return col_list
         except Exception as e:
             logger.error(e)
             logger.error('获取数据表字段错误....')
             # self.crawler.engine.close_spider(self.spider, 'mysql error')
-        results = self.cursor.fetchall()
-        col_str = results[0]['group_concat(column_name)']
-        col_list = col_str.split(',')
-        return col_list
+            return
 
     def _handle_str(self, num):
         """
