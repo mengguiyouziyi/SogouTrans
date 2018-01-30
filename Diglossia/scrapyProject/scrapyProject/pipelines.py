@@ -36,7 +36,7 @@ class MysqlPipeline(object):
             cursorclass=pymysql.cursors.DictCursor,
             # use_unicode=False,
         )
-        self.conn = self._conn_mysql(dbparams)
+        self.conn = pymysql.connect(**dbparams)
         self.conn.ping(True)
         # while not self.conn:
         #     logger.warning('Reconnect mysql~~~')
@@ -48,13 +48,6 @@ class MysqlPipeline(object):
         self.col_list = self._get_column()[1:-1]
         self.col_str = ','.join(self.col_list)
         self.val_str = self._handle_str(len(self.col_list))
-
-    def _conn_mysql(self, p):
-        try:
-            conn = pymysql.connect(**p)
-            return conn
-        except:
-            return
 
     def create(self):
         sql = """CREATE TABLE IF NOT EXISTS `"""
@@ -86,8 +79,8 @@ class MysqlPipeline(object):
         """
         sql = """select group_concat(column_name) from information_schema.columns WHERE table_name = '{tab}' and table_schema = 'spider'""".format(
             tab=self.tab)
-        self.conn.ping(True)
         try:
+            self.conn.ping(True)
             self.cursor.execute(sql)
         except Exception as e:
             logger.error(e)
@@ -113,12 +106,12 @@ class MysqlPipeline(object):
     def process_item(self, item, spider):
         in_sql = """insert into {tab} ({col}) VALUES ({val})""".format(tab=self.tab, col=self.col_str, val=self.val_str)
         in_args = [item[i] for i in self.col_list]
-        self.conn.ping(True)
         try:
+            self.conn.ping(True)
             self.cursor.execute(in_sql, in_args)
             self.conn.commit()
             logger.info(item[self.col_list[0]])
         except Exception as e:
             logger.error(e)
             logger.error('mysql error，源为：{}'.format(item[self.col_list[0]]))
-            self.crawler.engine.close_spider(spider, 'mysql error')
+            # self.crawler.engine.close_spider(spider, 'mysql error')
