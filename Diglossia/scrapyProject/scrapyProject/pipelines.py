@@ -37,6 +37,7 @@ class MysqlPipeline(object):
             # use_unicode=False,
         )
         self.conn = self._conn_mysql(dbparams)
+        self.conn.ping(True)
         # while not self.conn:
         #     logger.warning('Reconnect mysql~~~')
         #     self.conn = self._conn_mysql(dbparams)
