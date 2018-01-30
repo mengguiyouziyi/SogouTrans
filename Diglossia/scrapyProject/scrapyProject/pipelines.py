@@ -79,13 +79,13 @@ class MysqlPipeline(object):
         """
         sql = """select group_concat(column_name) from information_schema.columns WHERE table_name = '{tab}' and table_schema = 'spider'""".format(
             tab=self.tab)
+        self.conn.ping(True)
         try:
-            self.conn.ping(True)
             self.cursor.execute(sql)
         except Exception as e:
             logger.error(e)
             logger.error('获取数据表字段错误....')
-            self.crawler.engine.close_spider(self.spider, 'mysql error')
+            # self.crawler.engine.close_spider(self.spider, 'mysql error')
         results = self.cursor.fetchall()
         col_str = results[0]['group_concat(column_name)']
         col_list = col_str.split(',')
@@ -106,8 +106,8 @@ class MysqlPipeline(object):
     def process_item(self, item, spider):
         in_sql = """insert into {tab} ({col}) VALUES ({val})""".format(tab=self.tab, col=self.col_str, val=self.val_str)
         in_args = [item[i] for i in self.col_list]
+        self.conn.ping(True)
         try:
-            self.conn.ping(True)
             self.cursor.execute(in_sql, in_args)
             self.conn.commit()
             logger.info(item[self.col_list[0]])
