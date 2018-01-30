@@ -26,7 +26,9 @@ cursor = etl.cursor()
 sql = """select host from information_schema.processlist WHERE ID=connection_id();"""
 cursor.execute(sql)
 result = cursor.fetchone()
+results = cursor.fetchall()
 print(result)
+print(results)
 # sql = """CREATE TABLE `yd_oral_single_zh2ko` (
 #   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
 #   `src` text COMMENT '源语言',
