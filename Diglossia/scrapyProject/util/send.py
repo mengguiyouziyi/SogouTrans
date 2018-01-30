@@ -25,9 +25,9 @@ class Send(object):
         #             'db': 'spider', 'cursorclass': pymysql.cursors.DictCursor}
         # self.conn = pymysql.connect(**etl_conf)
         # self.cursor = self.conn.cursor()
-        # self.server = StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
+        self.server = StrictRedis(host=redis_host, port=redis_port, decode_responses=True)
 
-        self.server = StrictRedis(host='10.142.237.97', port=50111, decode_responses=True)
+        # self.server = StrictRedis(host='10.142.237.97', port=50111, decode_responses=True)
         self.request_key = spider_name + ':requests'
         self.file = codecs.open(file, 'r', 'utf-8')
 
