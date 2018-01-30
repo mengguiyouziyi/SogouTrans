@@ -37,13 +37,19 @@ class MysqlPipeline(object):
             # use_unicode=False,
         )
         self.conn = pymysql.connect(**dbparams)
-        c1=self.conn.get_host_info()
+        self.cursor = self.conn.cursor()
+        sql = """select host from information_schema.processlist WHERE ID=connection_id();"""
+        self.cursor.execute(sql)
+        result = self.cursor.fetchone()
+        print(result)
         self.conn.ping(True)
-        self.conn.get_host_info()
         # while not self.conn:
         #     logger.warning('Reconnect mysql~~~')
         #     self.conn = self._conn_mysql(dbparams)
         self.cursor = self.conn.cursor()
+        self.cursor.execute(sql)
+        result = self.cursor.fetchone()
+        print(result)
         if not self.create():
             self.crawler.engine.close_spider(self.spider, 'CreateTableError on {}'.format(self.tab))
 

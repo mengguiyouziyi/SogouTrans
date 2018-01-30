@@ -22,10 +22,11 @@ host2 = '106.39.246.223'
 etl_conf = {'host': host2, 'port': 50112, 'user': 'spider', 'password': 'chenguang', 'charset': 'utf8',
             'db': 'spider', 'cursorclass': pymysql.cursors.DictCursor}
 etl = pymysql.connect(**etl_conf)
-print(etl.get_host_info())
-print(etl.get_proto_info())
-print(etl.get_server_info())
-# cur = etl.cursor()
+cursor = etl.cursor()
+sql = """select host from information_schema.processlist WHERE ID=connection_id();"""
+cursor.execute(sql)
+result = cursor.fetchone()
+print(result)
 # sql = """CREATE TABLE `yd_oral_single_zh2ko` (
 #   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
 #   `src` text COMMENT '源语言',
