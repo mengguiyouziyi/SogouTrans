@@ -41,7 +41,7 @@ def set_interface(ip):
             sys.exit(1)
         is_success = test_interface()
         if not is_success:
-            time.sleep(0.5)
+            time.sleep(2)
             continue
         else:
             break

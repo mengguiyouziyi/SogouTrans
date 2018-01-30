@@ -37,7 +37,9 @@ class MysqlPipeline(object):
             # use_unicode=False,
         )
         self.conn = pymysql.connect(**dbparams)
+        c1=self.conn.get_host_info()
         self.conn.ping(True)
+        self.conn.get_host_info()
         # while not self.conn:
         #     logger.warning('Reconnect mysql~~~')
         #     self.conn = self._conn_mysql(dbparams)

@@ -88,7 +88,7 @@ class YdApiSpider(Spider):
             line = self.server.rpop(self.request_key)
             if not line:
                 raise CloseSpider('no datas')
-            salf, n, sign, data = self._get_params(line)
+            data = self._get_params(line)
             yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
                                  meta={'line': line}, callback=self.parse_httpbin, errback=self.errback_httpbin)
 
@@ -111,7 +111,7 @@ class YdApiSpider(Spider):
             'action': "FY_BY_REALTIME",
             'typoResult': 'false'
         }
-        return salf, n, sign, data
+        return data
 
     def parse_httpbin(self, response):
         line = response.meta.get('line')
@@ -125,12 +125,12 @@ class YdApiSpider(Spider):
             return
         if resp.get('errorCode') != 0:
             self.logger.error(repr(response.text))
-            self.server.lpush(self.error_key, line.strip())
+            self.server.lpush(self.request_key, line.strip())
             return
         results = resp.get('translateResult', [])
         if not results:
             self.logger.error(repr(response.text))
-            self.server.lpush(self.error_key, line.strip())
+            self.server.lpush(self.request_key, line.strip())
             return
         for result in results:
             item = YdApiItem()
