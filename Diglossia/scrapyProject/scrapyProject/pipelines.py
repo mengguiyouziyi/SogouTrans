@@ -71,9 +71,20 @@ class MysqlPipeline(object):
         for col in self.spider.col_index_list:
             sql += """KEY `index_{0}` (`{0}`(255))""".format(col)
         sql += """) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='{tab_desc}';""".format(tab_desc=self.spider.tab_desc)
-        # self.conn.ping(True)
         try:
-            self.cursor.execute(sql)
+            cursor = self.conn.cursor()
+            host1 = self._get_mysql_host(cursor=cursor)
+            self.conn.ping(True)
+            cursor = self.conn.cursor()
+            host2 = self._get_mysql_host(cursor=cursor)
+            if host1 != host2:
+                id_sql = """select ID from information_schema.processlist WHERE host=%s;""" % host1
+                cursor.execute(id_sql)
+                process_id = self.cursor.fetchone().get('ID')
+                cursor.execute("kill " + process_id)
+                self.conn.commit()
+
+            cursor.execute(sql)
             self.conn.commit()
             return True
         except Exception as e:
@@ -93,7 +104,18 @@ class MysqlPipeline(object):
             tab=self.tab)
         # self.conn.ping(True)
         try:
-            self.cursor.execute(sql)
+            cursor = self.conn.cursor()
+            host1 = self._get_mysql_host(cursor=cursor)
+            self.conn.ping(True)
+            cursor = self.conn.cursor()
+            host2 = self._get_mysql_host(cursor=cursor)
+            if host1 != host2:
+                id_sql = """select ID from information_schema.processlist WHERE host=%s;""" % host1
+                cursor.execute(id_sql)
+                process_id = self.cursor.fetchone().get('ID')
+                cursor.execute("kill " + process_id)
+                self.conn.commit()
+            cursor.execute(sql)
         except Exception as e:
             logger.error(e)
             logger.error('获取数据表字段错误....')
@@ -120,7 +142,18 @@ class MysqlPipeline(object):
         in_args = [item[i] for i in self.col_list]
         # self.conn.ping(True)
         try:
-            self.cursor.execute(in_sql, in_args)
+            cursor = self.conn.cursor()
+            host1 = self._get_mysql_host(cursor=cursor)
+            self.conn.ping(True)
+            cursor = self.conn.cursor()
+            host2 = self._get_mysql_host(cursor=cursor)
+            if host1 != host2:
+                id_sql = """select ID from information_schema.processlist WHERE host=%s;""" % host1
+                cursor.execute(id_sql)
+                process_id = self.cursor.fetchone().get('ID')
+                cursor.execute("kill " + process_id)
+                self.conn.commit()
+            cursor.execute(in_sql, in_args)
             self.conn.commit()
             logger.info(item[self.col_list[0]])
         except Exception as e:
