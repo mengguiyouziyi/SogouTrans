@@ -71,7 +71,7 @@ def main(file, spider_name):
 
 
 if __name__ == '__main__':
-    set_interface('10.146.252.117')
+    # set_interface('10.146.252.117')
     spider_name = sys.argv[1]
     file = SPIDER_CONF.get(spider_name).get('in_file')
     file = '/search/chenguang/meng/documents/SogouTrans/' + file
