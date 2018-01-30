@@ -78,7 +78,6 @@ class MysqlPipeline(object):
             return True
         except Exception as e:
             logger.error(e)
-            self.conn.close()
             return
 
     @classmethod
@@ -98,7 +97,6 @@ class MysqlPipeline(object):
         except Exception as e:
             logger.error(e)
             logger.error('获取数据表字段错误....')
-            self.conn.close()
             # self.crawler.engine.close_spider(self.spider, 'mysql error')
         results = self.cursor.fetchall()
         col_str = results[0]['group_concat(column_name)']
@@ -128,7 +126,6 @@ class MysqlPipeline(object):
         except Exception as e:
             logger.error(e)
             logger.error('mysql error，源为：{}'.format(item[self.col_list[0]]))
-            self.conn.close()
             # self.crawler.engine.close_spider(spider, 'mysql error')
         return item
 
