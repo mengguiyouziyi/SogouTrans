@@ -31,7 +31,7 @@ class YdApiSpider(Spider):
             'content-type': "application/x-www-form-urlencoded; charset=UTF-8",
             'referer': "http://fanyi.youdao.com/",
         },
-        'DOWNLOAD_DELAY': 1.5
+        'DOWNLOAD_DELAY': 1.2
     }
 
     def __init__(self, crawler, src, tgt, *args, **kwargs):
