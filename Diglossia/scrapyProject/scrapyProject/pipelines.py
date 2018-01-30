@@ -37,9 +37,9 @@ class MysqlPipeline(object):
             # use_unicode=False,
         )
         self.conn = self._conn_mysql(dbparams)
-        while not self.conn:
-            logger.warning('Reconnect mysql~~~')
-            self.conn = self._conn_mysql(dbparams)
+        # while not self.conn:
+        #     logger.warning('Reconnect mysql~~~')
+        #     self.conn = self._conn_mysql(dbparams)
         self.cursor = self.conn.cursor()
         if not self.create():
             self.crawler.engine.close_spider(self.spider, 'CreateTableError on {}'.format(self.tab))
@@ -65,6 +65,7 @@ class MysqlPipeline(object):
         for col in self.spider.col_index_list:
             sql += """KEY `index_{0}` (`{0}`(255))""".format(col)
         sql += """) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='{tab_desc}';""".format(tab_desc=self.spider.tab_desc)
+        self.conn.ping(True)
         try:
             self.cursor.execute(sql)
             self.conn.commit()
@@ -80,12 +81,11 @@ class MysqlPipeline(object):
     def _get_column(self):
         """
         获取mysql表 字段字符串
-        :param con:
-        :param table_in:
         :return: 全部字段
         """
         sql = """select group_concat(column_name) from information_schema.columns WHERE table_name = '{tab}' and table_schema = 'spider'""".format(
             tab=self.tab)
+        self.conn.ping(True)
         try:
             self.cursor.execute(sql)
         except Exception as e:
@@ -112,6 +112,7 @@ class MysqlPipeline(object):
     def process_item(self, item, spider):
         in_sql = """insert into {tab} ({col}) VALUES ({val})""".format(tab=self.tab, col=self.col_str, val=self.val_str)
         in_args = [item[i] for i in self.col_list]
+        self.conn.ping(True)
         try:
             self.cursor.execute(in_sql, in_args)
             self.conn.commit()
