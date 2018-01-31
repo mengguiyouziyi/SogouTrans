@@ -5,8 +5,11 @@ except:
 import time
 import xlrd
 import os
+import logging
 from traceback import print_exc
 from os.path import exists, join
+
+logger = logging.getLogger(__name__)
 
 
 def down(audio, out_dir='./audios/'):
@@ -30,7 +33,7 @@ def down(audio, out_dir='./audios/'):
         urlretrieve(audio, file, cbk)
         return True
     except:
-        print_exc()
+        print_exc(file=open('./tb.txt', 'w'))
         return
         # time.sleep(1)
 
@@ -50,4 +53,6 @@ if __name__ == '__main__':
     for col in cols:
         is_ok = down(col)
         if not is_ok:
+            with open('./fail.txt', 'w') as f:
+                f.write(col + '\n')
             continue
