@@ -46,16 +46,16 @@ class YdApiSpider(Spider):
         self.url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
         self.ip = self._get_host_ip()
         self.settings = crawler.settings
-        self.server = StrictRedis(host=self.settings.get('REDIS_HOST'), port=self.settings.get('REDIS_PORT'),
-                                  decode_responses=True)
         self.cookie_dict = self._get_cookie()
         self.cookie_key = '%(name)s:cookies' % {'name': self.name}
         self.request_key = '%(name)s:requests' % {'name': self.name}
         self.error_key = '%(name)s:errors' % {'name': self.name}
+
+        self.server = StrictRedis(host=self.settings.get('REDIS_HOST'), port=self.settings.get('REDIS_PORT'),
+                                  decode_responses=True)
+
         self.server.sadd(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
         self.cookie = self.server.srandmember(self.cookie_key)
-        # self.item_keys = ['src', 'srcType', 'zh', 'en', 'ja', 'ko', 'fr', 'ru', 'es', 'pt', 'ara', 'de', 'it', 'url',
-        #                   'project', 'spider', 'server']
         self.d = {}.fromkeys(self.col_list.keys(), '')
 
     def _get_cookie(self):

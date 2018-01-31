@@ -33,6 +33,8 @@ class ChinassppSpider(Spider):
         },
         'DOWNLOAD_DELAY': 2,
         'COOKIES_ENABLED': False,
+        'SCHEDULER': "scrapy_redis.scheduler.Scheduler",
+        'DUPEFILTER_CLASS': "scrapy_redis.dupefilter.RFPDupeFilter",
     }
 
     def __init__(self, crawler, *args, **kwargs):
