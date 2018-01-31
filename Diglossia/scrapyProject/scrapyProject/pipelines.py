@@ -16,14 +16,16 @@ sys.path.append(base_path)
 sys.path.append(father_path)
 import pymysql
 import logging
+from redis import StrictRedis
 
 logger = logging.getLogger(__name__)
 
 
 class MysqlPipeline(object):
-    def __init__(self, tab, dbparams):
+    def __init__(self, tab, dbparams, redisparams):
         self.tab = tab
         self.dbparams = dbparams
+        self.redisparams = redisparams
 
     def open_spider(self, spider):
         create(spider, self.dbparams)
@@ -31,6 +33,19 @@ class MysqlPipeline(object):
         spider.col_list = col_list
 
     # def _get_mysql_host(self, cursor):
+    #     """
+    #         # cursor = self.conn.cursor()
+    #         # host1 = self._get_mysql_host(cursor=cursor)
+    #         # self.conn.ping(True)
+    #         # cursor = self.conn.cursor()
+    #         # host2 = self._get_mysql_host(cursor=cursor)
+    #         # if host1 != host2:
+    #         #     id_sql = "select ID from information_schema.processlist WHERE host=%s;" % host1
+    #         #     cursor.execute(id_sql)
+    #         #     process_id = cursor.fetchone().get('ID')
+    #         #     cursor.execute("kill " + process_id)
+    #         #     self.conn.commit()
+    #     """
     #     sql = """select host from information_schema.processlist WHERE ID=connection_id();"""
     #     cursor.execute(sql)
     #     result = cursor.fetchone()
@@ -49,7 +64,12 @@ class MysqlPipeline(object):
             cursorclass=pymysql.cursors.DictCursor,
             # use_unicode=False,
         )
-        return cls(tab, dbparams)
+        redisparams = dict(
+            host=crawler.settings['REDIS_HOST'],
+            port=crawler.settings['REDIS_HOST'],
+            decode_responses=True
+        )
+        return cls(tab, dbparams, redisparams)
 
     def process_item(self, item, spider):
         col_list = spider.col_list[1:-1]
@@ -57,27 +77,19 @@ class MysqlPipeline(object):
         val_str = handle_str(len(col_list))
         in_sql = """insert into {tab} ({col}) VALUES ({val})""".format(tab=self.tab, col=col_str, val=val_str)
         in_args = [item[i] for i in col_list]
-        conn = pymysql.connect(**self.dbparams)
         try:
-            # cursor = self.conn.cursor()
-            # host1 = self._get_mysql_host(cursor=cursor)
-            # self.conn.ping(True)
-            # cursor = self.conn.cursor()
-            # host2 = self._get_mysql_host(cursor=cursor)
-            # if host1 != host2:
-            #     id_sql = """select ID from information_schema.processlist WHERE host=%s;""" % host1
-            #     cursor.execute(id_sql)
-            #     process_id = cursor.fetchone().get('ID')
-            #     cursor.execute("kill " + process_id)
-            #     self.conn.commit()
+            conn = pymysql.connect(**self.dbparams)
+        except Exception as e:
+            logger.error(e)
+            logger.error('mysql error，源为：{}'.format(item[col_list[0]]))
+            server = StrictRedis(**self.redisparams)
+            server.lpush(spider.request_key, item[col_list[0]])
+            # self.crawler.engine.close_spider(spider, 'mysql error')
+        else:
             cursor = conn.cursor()
             cursor.execute(in_sql, in_args)
             conn.commit()
             logger.info(item[col_list[0]])
-        except Exception as e:
-            logger.error(e)
-            logger.error('mysql error，源为：{}'.format(item[col_list[0]]))
-            # self.crawler.engine.close_spider(spider, 'mysql error')
         finally:
             conn.close()
             return item
@@ -103,21 +115,21 @@ def get_column(spider, dbparams):
     """
     sql = """select group_concat(column_name) from information_schema.columns WHERE table_name = '{tab}' and table_schema = 'spider'""".format(
         tab=spider.name)
-    conn = pymysql.connect(**dbparams)
     try:
+        conn = pymysql.connect(**dbparams)
+    except Exception as e:
+        logger.error(e)
+        logger.error('获取数据表字段错误....')
+        # self.crawler.engine.close_spider(self.spider, 'mysql error')
+    else:
         cursor = conn.cursor()
         cursor.execute(sql)
         results = cursor.fetchall()
         col_str = results[0]['group_concat(column_name)']
         col_list = col_str.split(',')
-        return col_list
-    except Exception as e:
-        logger.error(e)
-        logger.error('获取数据表字段错误....')
-        # self.crawler.engine.close_spider(self.spider, 'mysql error')
-        return
     finally:
         conn.close()
+        return col_list
 
 
 def create(spider, dbparams):
@@ -130,14 +142,13 @@ def create(spider, dbparams):
     for col in spider.col_index_list:
         sql += """KEY `index_{0}` (`{0}`(255))""".format(col)
     sql += """) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='{tab_desc}';""".format(tab_desc=spider.tab_desc)
-    conn = pymysql.connect(**dbparams)
     try:
+        conn = pymysql.connect(**dbparams)
+    except Exception as e:
+        logger.error(e)
+    else:
         cursor = conn.cursor()
         cursor.execute(sql)
         conn.commit()
-        return True
-    except Exception as e:
-        logger.error(e)
-        return
     finally:
         conn.close()
