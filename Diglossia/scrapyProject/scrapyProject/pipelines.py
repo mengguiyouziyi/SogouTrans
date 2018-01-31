@@ -37,17 +37,17 @@ class MysqlPipeline(object):
             # use_unicode=False,
         )
         self.conn = pymysql.connect(**dbparams)
-        # self.cursor = self.conn.cursor()
-        # host1 = self._get_mysql_host(cursor=self.cursor)
-        # self.conn.ping(True)
-        # self.cursor = self.conn.cursor()
-        # host2 = self._get_mysql_host(cursor=self.cursor)
-        # if host1 != host2:
-        #     id_sql = "select ID from information_schema.processlist WHERE host=%s;" % host1
-        #     self.cursor.execute(id_sql)
-        #     id = self.cursor.fetchone().get('ID')
-        #     self.cursor.execute("kill " + id)
-        #     self.conn.commit()
+        cursor = self.conn.cursor()
+        host1 = self._get_mysql_host(cursor=cursor)
+        self.conn.ping(True)
+        cursor = self.conn.cursor()
+        host2 = self._get_mysql_host(cursor=cursor)
+        if host1 != host2:
+            id_sql = """select ID from information_schema.processlist WHERE host=%s;""" % host1
+            cursor.execute(id_sql)
+            process_id = cursor.fetchone().get('ID')
+            cursor.execute("kill " + process_id)
+            self.conn.commit()
 
         if not self.create():
             self.crawler.engine.close_spider(self.spider, 'CreateTableError on {}'.format(self.tab))
