@@ -64,29 +64,31 @@ class ChinassppSpider(Spider):
         return ip
 
     def start_requests(self):
-        url = 'http://www.chinasspp.com/brand/brands-%d.html'
+        burl = 'http://www.chinasspp.com/brand/brands-'
         for i in range(1, 1593):
-            url = url % i
+            url = burl + str(i) + '.html'
             yield scrapy.Request(url, callback=self.parse_httpbin, errback=self.errback_httpbin)
 
     def parse_httpbin(self, response):
         s = Selector(text=response.text)
-        first = s.xpath('//*[@class="first"]')
-        brand = first.xpath('./a/text()').extract_first()
-        brand_url = first.xpath('./a/@href').extract_first()
-        categary = first.xpath('./span/text()').extract_first()
-        company = first.xpath('./text()').extract_first()
-        item = ChinassppItem()
-        item.update(self.d)
-        item['brand'] = brand
-        item['brand_url'] = brand_url  # 源语言类型
-        item['categary'] = categary.replace('行业类别：', '')
-        item['company'] = company.strip()
-        # item['url'] = response.url
-        item['project'] = self.settings.get('BOT_NAME')
-        item['spider'] = self.name
-        item['server'] = self.ip
-        yield item
+        firsts = s.xpath('//*[@class="first"]')
+        for first in firsts:
+            brand = first.xpath('./a/text()').extract_first()
+            brand_url = first.xpath('./a/@href').extract_first()
+            categary = first.xpath('./span/text()').extract_first()
+            company = first.xpath('./text()').extract()
+            company = ''.join(company).strip()
+            item = ChinassppItem()
+            item.update(self.d)
+            item['brand'] = brand
+            item['brand_url'] = brand_url  # 源语言类型
+            item['categary'] = categary.replace('行业类别：', '')
+            item['company'] = company.strip()
+            # item['url'] = response.url
+            item['project'] = self.settings.get('BOT_NAME')
+            item['spider'] = self.name
+            item['server'] = self.ip
+            yield item
 
     def errback_httpbin(self, failure):
         self.logger.error(repr(failure))
