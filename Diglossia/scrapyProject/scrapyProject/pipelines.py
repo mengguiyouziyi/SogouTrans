@@ -54,6 +54,7 @@ class MysqlPipeline(object):
     def process_item(self, item, spider):
         col_list = spider.col_list
         col_str = ','.join(col_list)
+        logger.info(col_str)
         val_str = handle_str(len(col_list))
         in_sql = """insert into {tab} ({col}) VALUES ({val})""".format(tab=self.tab, col=col_str, val=val_str)
         in_args = [item[i] for i in col_list]
