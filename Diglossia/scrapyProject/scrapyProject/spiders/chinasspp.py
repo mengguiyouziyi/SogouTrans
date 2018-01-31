@@ -69,9 +69,10 @@ class ChinassppSpider(Spider):
         burl = 'http://www.chinasspp.com/brand/brands-'
         for i in range(1, 1593):
             url = burl + str(i) + '.html'
-            yield scrapy.Request(url, callback=self.parse_httpbin, errback=self.errback_httpbin)
+            yield scrapy.Request(url)
 
-    def parse_httpbin(self, response):
+    # def parse_httpbin(self, response):
+    def parse(self, response):
         s = Selector(text=response.text)
         firsts = s.xpath('//*[@class="first"]')
         for first in firsts:
@@ -92,5 +93,5 @@ class ChinassppSpider(Spider):
             item['server'] = self.ip
             yield item
 
-    def errback_httpbin(self, failure):
-        self.logger.error(repr(failure))
+    # def errback_httpbin(self, failure):
+    #     self.logger.error(repr(failure))
