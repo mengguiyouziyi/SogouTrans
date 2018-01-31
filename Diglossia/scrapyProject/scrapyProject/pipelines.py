@@ -80,7 +80,7 @@ class MysqlPipeline(object):
             if host1 != host2:
                 id_sql = """select ID from information_schema.processlist WHERE host=%s;""" % host1
                 cursor.execute(id_sql)
-                process_id = self.cursor.fetchone().get('ID')
+                process_id = cursor.fetchone().get('ID')
                 cursor.execute("kill " + process_id)
                 self.conn.commit()
 
@@ -112,7 +112,7 @@ class MysqlPipeline(object):
             if host1 != host2:
                 id_sql = """select ID from information_schema.processlist WHERE host=%s;""" % host1
                 cursor.execute(id_sql)
-                process_id = self.cursor.fetchone().get('ID')
+                process_id = cursor.fetchone().get('ID')
                 cursor.execute("kill " + process_id)
                 self.conn.commit()
             cursor.execute(sql)
@@ -151,7 +151,7 @@ class MysqlPipeline(object):
             if host1 != host2:
                 id_sql = """select ID from information_schema.processlist WHERE host=%s;""" % host1
                 cursor.execute(id_sql)
-                process_id = self.cursor.fetchone().get('ID')
+                process_id = cursor.fetchone().get('ID')
                 cursor.execute("kill " + process_id)
                 self.conn.commit()
             cursor.execute(in_sql, in_args)
