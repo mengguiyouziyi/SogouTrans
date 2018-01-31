@@ -52,7 +52,7 @@ class MysqlPipeline(object):
         return cls(tab, dbparams)
 
     def process_item(self, item, spider):
-        col_list = spider.col_list
+        col_list = spider.col_list[1:-1]
         col_str = ','.join(col_list)
         logger.info(col_str)
         val_str = handle_str(len(col_list))
