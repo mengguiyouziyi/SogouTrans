@@ -41,10 +41,12 @@ class YdApiItem(Item):
     server = Field()
 
 
-
 class ChinassppItem(Item):
     # Primary fields
-    src = Field()
+    brand = Field()
+    brand_url = Field()
+    categary = Field()
+    company = Field()
 
     # Calculated fields
     # images = Field()
