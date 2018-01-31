@@ -15,7 +15,6 @@ class LtnItem(Item):
 
 
 class YdApiItem(Item):
-
     # Primary fields
     src = Field()
     srcType = Field()
@@ -30,6 +29,22 @@ class YdApiItem(Item):
     ara = Field()
     de = Field()
     it = Field()
+
+    # Calculated fields
+    # images = Field()
+    # location = Field()
+
+    # Housekeeping fields
+    url = Field()
+    project = Field()
+    spider = Field()
+    server = Field()
+
+
+
+class ChinassppItem(Item):
+    # Primary fields
+    src = Field()
 
     # Calculated fields
     # images = Field()

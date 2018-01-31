@@ -17,8 +17,7 @@ BOT_NAME = 'scrapyProject'
 SPIDER_MODULES = ['scrapyProject.spiders']
 NEWSPIDER_MODULE = 'scrapyProject.spiders'
 
-#################################################
-################ scrapy-redis ###################
+##~~~~~~~~~~~~~~~~ scrapy-redis ~~~~~~~~~~~~~~~~~~~
 # Enables scheduling storing requests queue in redis.
 # SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 
@@ -39,8 +38,7 @@ REDIS_PORT = 50111
 
 # Don't cleanup redis queues, allows to pause/resume crawls.
 SCHEDULER_PERSIST = True
-################################################
-#################################################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -170,4 +168,6 @@ SPIDER_CONF = {
     'yd_oral_zh2ru': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ru'})},
     'yd_oral_zh2ko': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'})},
     'yd_oral_zh2ja': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ja'})},
+
+    'chinasspp': {'in_file': '', 'args': OrderedDict({})},
 }
