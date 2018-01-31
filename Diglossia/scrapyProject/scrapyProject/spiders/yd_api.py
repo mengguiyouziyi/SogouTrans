@@ -50,12 +50,14 @@ class YdApiSpider(Spider):
         self.cookie_key = '%(name)s:cookies' % {'name': self.name}
         self.request_key = '%(name)s:requests' % {'name': self.name}
         self.error_key = '%(name)s:errors' % {'name': self.name}
-
-        self.server = StrictRedis(host=self.settings.get('REDIS_HOST'), port=self.settings.get('REDIS_PORT'),
-                                  decode_responses=True)
-
+        self.redisparams = dict(
+            host=self.settings['REDIS_HOST'],
+            port=self.settings['REDIS_HOST'],
+            decode_responses=True
+        )
+        self.server = StrictRedis(**self.redisparams)
         self.server.sadd(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
-        self.cookie = self.server.srandmember(self.cookie_key)
+        self.cookie = json.loads(self.server.srandmember(self.cookie_key))
         self.d = {}.fromkeys(self.col_list.keys(), '')
 
     def _get_cookie(self):
@@ -85,11 +87,16 @@ class YdApiSpider(Spider):
 
     def start_requests(self):
         while 1:
-            line = self.server.rpop(self.request_key)
+            try:
+                server = StrictRedis(**self.redisparams)
+            except:
+                continue
+            line = server.rpop(self.request_key)
             if not line:
-                raise CloseSpider('no datas')
+                continue
+                # raise CloseSpider('no datas')
             data = self._get_params(line)
-            yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=json.loads(self.cookie),
+            yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=self.cookie,
                                  meta={'line': line}, callback=self.parse_httpbin, errback=self.errback_httpbin)
 
     def _get_params(self, line):
