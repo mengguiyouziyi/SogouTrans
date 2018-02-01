@@ -33,7 +33,7 @@ class PaiziSpider(Spider):
             'referer': "https://i.paizi.com/",
             'upgrade-insecure-requests': "1",
         },
-        'DOWNLOAD_DELAY': 2,
+        'DOWNLOAD_DELAY': 1.5,
         'COOKIES_ENABLED': False,
         'SCHEDULER': "scrapy_redis.scheduler.Scheduler",
         'DUPEFILTER_CLASS': "scrapy_redis.dupefilter.RFPDupeFilter",
