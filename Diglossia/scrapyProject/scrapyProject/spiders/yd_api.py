@@ -35,7 +35,7 @@ class YdApiSpider(Spider):
         'DOWNLOAD_DELAY': 1
     }
 
-    def __init__(self, src, tgt, *args, **kwargs):
+    def __init__(self, settings, src, tgt, *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)
         self.col_comm = {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语', 'fr': '法语',
                          'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语', 'it': '意大利语', 'url': 'url',
@@ -46,14 +46,15 @@ class YdApiSpider(Spider):
         self.tgt = tgt
         self.url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
         self.ip = self._get_host_ip()
-        self.settings = self.crawler.settings
         self.cookie_dict = self._get_cookie()
+
         self.cookie_key = '%(name)s:cookies' % {'name': self.name}
         self.request_key = '%(name)s:requests' % {'name': self.name}
         self.error_key = '%(name)s:errors' % {'name': self.name}
+
         self.redisparams = dict(
-            host=self.settings['REDIS_HOST'],
-            port=self.settings['REDIS_PORT'],
+            host=settings['REDIS_HOST'],
+            port=settings['REDIS_PORT'],
             decode_responses=True
         )
         self.server = self._get_redis()
@@ -64,9 +65,9 @@ class YdApiSpider(Spider):
     def _get_redis(self):
         return StrictRedis(**self.redisparams)
 
-    # @classmethod
-    # def from_crawler(cls, crawler, *args, **kwargs):
-    #     return cls(crawler, *args, **kwargs)
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        return cls(crawler.settings, *args, **kwargs)
 
     def start_requests(self):
         while 1:
@@ -121,7 +122,6 @@ class YdApiSpider(Spider):
             self.logger.error('JsonLoadsError on %s', line)
             self._lpush(self.error_key, line)
             return
-
         if resp.get('errorCode') != 0:
             self.logger.error(repr(response.text))
             self._lpush(self.request_key, line)

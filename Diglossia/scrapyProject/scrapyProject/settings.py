@@ -171,4 +171,5 @@ SPIDER_CONF = {
 
     'chinasspp': {'in_file': '', 'args': OrderedDict({})},
     'paizi': {'in_file': '', 'args': OrderedDict({})},
+    'china_ef': {'in_file': '', 'args': OrderedDict({})},
 }

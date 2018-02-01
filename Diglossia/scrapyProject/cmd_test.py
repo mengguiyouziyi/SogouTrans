@@ -8,5 +8,5 @@ sys.path.append(base_path)
 
 # file = os.path.basename(__file__).replace('cmd_', '').replace('.py', '')
 if __name__ == '__main__':
-    cmd_list = ['scrapy', 'crawl', 'paizi']
+    cmd_list = ['scrapy', 'crawl', 'china_ef']
     execute(cmd_list)
