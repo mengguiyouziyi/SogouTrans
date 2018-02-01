@@ -33,13 +33,14 @@ class YdApiSpider(Spider):
         },
         'DOWNLOAD_DELAY': 1.2
     }
+    items = []
 
     def __init__(self, crawler, src, tgt, *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)
         self.col_comm = {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语', 'fr': '法语',
                          'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语', 'it': '意大利语', 'url': 'url',
                          'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
-        self.col_list = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
+        self.col_dict = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
         self.col_index_list = ['src']  # 为创建mysql表格的index而设置的属性
         self.src = src
         self.tgt = tgt
@@ -55,31 +56,13 @@ class YdApiSpider(Spider):
             port=self.settings['REDIS_HOST'],
             decode_responses=True
         )
-        self.server = StrictRedis(**self.redisparams)
+        self.server = self._get_redis()
         self.server.sadd(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
         self.cookie = json.loads(self.server.srandmember(self.cookie_key))
-        self.d = {}.fromkeys(self.col_list.keys(), '')
+        self.d = {}.fromkeys(self.col_dict.keys(), '')
 
-    def _get_cookie(self):
-        url = 'http://fanyi.youdao.com/'
-        uas = self.settings.get('USER_AGENT_CHOICES', [])
-        headers = {'User-Agent': random.choice(uas)}
-        response = requests.get(url=url, headers=headers)
-        cookie_dict = dict(response.cookies.items())
-        return cookie_dict
-
-    def _get_host_ip(self):
-        """
-        获取当前网络环境的ip地址
-        :return:
-        """
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try:
-            s.connect(('8.8.8.8', 80))
-            ip = s.getsockname()[0]
-        finally:
-            s.close()
-        return ip
+    def _get_redis(self):
+        return StrictRedis(**self.redisparams)
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
@@ -88,13 +71,12 @@ class YdApiSpider(Spider):
     def start_requests(self):
         while 1:
             try:
-                server = StrictRedis(**self.redisparams)
+                line = self.server.rpop(self.request_key)
             except:
+                self.server = self._get_redis()
                 continue
-            line = server.rpop(self.request_key)
             if not line:
-                continue
-                # raise CloseSpider('no datas')
+                raise CloseSpider('no datas')
             data = self._get_params(line)
             yield scrapy.Request(self.url, method='POST', body=urlencode(data), cookies=self.cookie,
                                  meta={'line': line}, callback=self.parse_httpbin, errback=self.errback_httpbin)
@@ -120,6 +102,15 @@ class YdApiSpider(Spider):
         }
         return data
 
+    def _lpush(self, key, line):
+        while 1:
+            try:
+                self.server.lpush(key, line.strip())
+            except:
+                self.server = self._get_redis()
+                continue
+            break
+
     def parse_httpbin(self, response):
         line = response.meta.get('line')
         # -------------- 以下三种情况都会重新打入redis ---------------------
@@ -128,16 +119,17 @@ class YdApiSpider(Spider):
         except Exception as e:
             self.logger.error(repr(e))
             self.logger.error('JsonLoadsError on %s', line)
-            self.server.lpush(self.error_key, line.strip())
+            self._lpush(self.error_key, line)
             return
+
         if resp.get('errorCode') != 0:
             self.logger.error(repr(response.text))
-            self.server.lpush(self.request_key, line.strip())
+            self._lpush(self.request_key, line)
             return
         results = resp.get('translateResult', [])
         if not results:
             self.logger.error(repr(response.text))
-            self.server.lpush(self.request_key, line.strip())
+            self._lpush(self.request_key, line)
             return
         for result in results:
             item = YdApiItem()
@@ -161,7 +153,28 @@ class YdApiSpider(Spider):
         self.logger.error(repr(failure))
         line = failure.request.meta.get('line')
         self.logger.error('TimeOutError on %s', line)
-        self.server.lpush(self.request_key, line.strip())
+        self._lpush(self.request_key, line)
+
+    def _get_cookie(self):
+        url = 'http://fanyi.youdao.com/'
+        uas = self.settings.get('USER_AGENT_CHOICES', [])
+        headers = {'User-Agent': random.choice(uas)}
+        response = requests.get(url=url, headers=headers)
+        cookie_dict = dict(response.cookies.items())
+        return cookie_dict
+
+    def _get_host_ip(self):
+        """
+        获取当前网络环境的ip地址
+        :return:
+        """
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            s.connect(('8.8.8.8', 80))
+            ip = s.getsockname()[0]
+        finally:
+            s.close()
+        return ip
 
 
 class YdNewsZhEsSpider(YdApiSpider):
