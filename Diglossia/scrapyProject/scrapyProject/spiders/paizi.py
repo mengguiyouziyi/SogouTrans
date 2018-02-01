@@ -42,12 +42,12 @@ class PaiziSpider(Spider):
         super(PaiziSpider, self).__init__(*args, **kwargs)
         self.col_comm = {'brand': '品牌名', 'brand_url': '品牌详情页url', 'categary': '行业类别', 'company': '公司', 'url': 'url',
                          'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
-        self.col_list = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
+        self.col_dict = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
         self.col_index_list = ['brand']  # 为创建mysql表格的index而设置的属性
         self.tab_desc = 'pazi品牌名称'
         self.ip = self._get_host_ip()
         self.settings = crawler.settings
-        self.d = {}.fromkeys(self.col_list.keys(), '')
+        self.d = {}.fromkeys(self.col_dict.keys(), '')
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
