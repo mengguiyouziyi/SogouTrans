@@ -73,6 +73,7 @@ class MysqlPipeline(object):
         in_args = [item[i] for i in col_list]
         spider.logger.info(item[col_list[0]])
         l = len(spider.items)
+        print(l)
         if l > 5:
             self._in_func(spider)
             spider.logger.info('Insert %d' % l)
