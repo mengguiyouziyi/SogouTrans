@@ -68,7 +68,7 @@ class PaiziSpider(Spider):
         return ip
 
     def start_requests(self):
-        burl = 'https://i.paizi.com/dp-{xx}-{yy}'.format()
+        burl = 'https://i.paizi.com/dp-{xx}-{yy}'
         urls = [[burl.format(xx=chr(xx), yy=yy) for xx in range(97, 123)] for yy in range(1, 12)]
         urls.append('https://i.paizi.com/dp-shu')
         for url in urls:
