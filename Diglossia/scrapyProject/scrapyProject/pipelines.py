@@ -15,6 +15,9 @@ sys.path.append(path)
 sys.path.append(base_path)
 sys.path.append(father_path)
 import pymysql
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class MysqlPipeline(object):
@@ -69,13 +72,13 @@ class MysqlPipeline(object):
             break
 
     def process_item(self, item, spider):
-        spider.logger.info(item['src'])
+        logger.info(item['src'])
         col_list = spider.col_list[1:-1]
-        print(col_list)
+        logger.info(col_list)
         in_args = [item[i] for i in col_list]
         spider.logger.info(item[col_list[0]])
         l = len(spider.items)
-        print(l)
+        logger.info(l)
         if l > 5:
             self._in_func(spider)
             spider.logger.info('Insert %d' % l)
