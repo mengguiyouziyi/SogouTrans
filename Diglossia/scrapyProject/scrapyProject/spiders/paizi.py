@@ -41,8 +41,8 @@ class PaiziSpider(Spider):
         'DOWNLOAD_TIMEOUT': 300
     }
 
-    def __init__(self, crawler, *args, **kwargs):
-        super(PaiziSpider, self).__init__(*args, **kwargs)
+    def __init__(self, crawler):
+        # super(PaiziSpider, self).__init__(*args, **kwargs)
         self.col_comm = {'brand': '品牌名', 'brand_url': '品牌详情页url', 'categary': '行业类别', 'company': '公司', 'url': 'url',
                          'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
         self.col_dict = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
@@ -54,7 +54,7 @@ class PaiziSpider(Spider):
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
-        return cls(crawler, *args, **kwargs)
+        return cls(crawler)
 
     def _get_host_ip(self):
         """
