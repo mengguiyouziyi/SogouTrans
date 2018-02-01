@@ -69,6 +69,7 @@ class MysqlPipeline(object):
             break
 
     def process_item(self, item, spider):
+        spider.logger.info(item['src'])
         col_list = spider.col_list[1:-1]
         in_args = [item[i] for i in col_list]
         spider.logger.info(item[col_list[0]])
