@@ -37,6 +37,8 @@ class PaiziSpider(Spider):
         'COOKIES_ENABLED': False,
         'SCHEDULER': "scrapy_redis.scheduler.Scheduler",
         'DUPEFILTER_CLASS': "scrapy_redis.dupefilter.RFPDupeFilter",
+        'RETRY_TIMES': 5,
+        'DOWNLOAD_TIMEOUT': 300
     }
 
     def __init__(self, crawler, *args, **kwargs):
@@ -87,7 +89,7 @@ class PaiziSpider(Spider):
 
     def parse_detail(self, response):
         s = Selector(text=response.text)
-        brand = s.xpath('//*[@class="c02-1-2-1 sty-l"]/p[2]/text()')
+        brand = s.xpath('//*[@class="c02-1-2-1 sty-l"]/p[2]/text()').extract_first()
         item = PaiziItem()
         item.update(self.d)
         item['brand'] = brand
