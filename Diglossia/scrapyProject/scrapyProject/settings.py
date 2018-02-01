@@ -170,4 +170,5 @@ SPIDER_CONF = {
     'yd_oral_zh2ja': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ja'})},
 
     'chinasspp': {'in_file': '', 'args': OrderedDict({})},
+    'paizi': {'in_file': '', 'args': OrderedDict({})},
 }

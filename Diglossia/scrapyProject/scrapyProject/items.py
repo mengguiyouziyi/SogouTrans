@@ -57,3 +57,21 @@ class ChinassppItem(Item):
     project = Field()
     spider = Field()
     server = Field()
+
+
+class PaiziItem(Item):
+    # Primary fields
+    brand = Field()
+    brand_url = Field()
+    categary = Field()
+    company = Field()
+
+    # Calculated fields
+    # images = Field()
+    # location = Field()
+
+    # Housekeeping fields
+    url = Field()
+    project = Field()
+    spider = Field()
+    server = Field()

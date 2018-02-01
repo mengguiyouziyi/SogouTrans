@@ -159,7 +159,13 @@ class YdApiSpider(Spider):
         url = 'http://fanyi.youdao.com/'
         uas = self.settings.get('USER_AGENT_CHOICES', [])
         headers = {'User-Agent': random.choice(uas)}
-        response = requests.get(url=url, headers=headers)
+        while 1:
+            try:
+                response = requests.get(url=url, headers=headers)
+            except:
+                time.sleep(3)
+                continue
+            break
         cookie_dict = dict(response.cookies.items())
         return cookie_dict
 

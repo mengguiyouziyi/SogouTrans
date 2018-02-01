@@ -11,13 +11,14 @@ sys.path.append(base_path)
 sys.path.append(father_path)
 import scrapy
 import socket
+from urllib.parse import urljoin
 from collections import OrderedDict
 from scrapy.spiders import Spider
 from scrapy.selector import Selector
-from scrapyProject.items import ChinassppItem
+from scrapyProject.items import PaiziItem
 
 
-class ChinassppSpider(Spider):
+class PaiziSpider(Spider):
     name = 'paizi'
     custom_settings = {
         'DEFAULT_REQUEST_HEADERS': {
@@ -38,12 +39,12 @@ class ChinassppSpider(Spider):
     }
 
     def __init__(self, crawler, *args, **kwargs):
-        super(ChinassppSpider, self).__init__(*args, **kwargs)
+        super(PaiziSpider, self).__init__(*args, **kwargs)
         self.col_comm = {'brand': '品牌名', 'brand_url': '品牌详情页url', 'categary': '行业类别', 'company': '公司', 'url': 'url',
                          'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
         self.col_list = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
         self.col_index_list = ['brand']  # 为创建mysql表格的index而设置的属性
-        self.tab_desc = 'chinasspp品牌名称'
+        self.tab_desc = 'pazi品牌名称'
         self.ip = self._get_host_ip()
         self.settings = crawler.settings
         self.d = {}.fromkeys(self.col_list.keys(), '')
@@ -66,33 +67,32 @@ class ChinassppSpider(Spider):
         return ip
 
     def start_requests(self):
-        burl = 'https://i.paizi.com/dp-a-1'
-        'https://i.paizi.com/dp-shu'
-        for i in range(1, 1593):
-            url = burl + str(i) + '.html'
+        burl = 'https://i.paizi.com/dp-{xx}-{yy}'.format()
+        urls = [[burl.format(xx=chr(xx), yy=yy) for xx in range(97, 123)] for yy in range(1, 12)]
+        urls.append('https://i.paizi.com/dp-shu')
+        for url in urls:
             yield scrapy.Request(url)
 
-    # def parse_httpbin(self, response):
     def parse(self, response):
         s = Selector(text=response.text)
-        firsts = s.xpath('//*[@class="first"]')
-        for first in firsts:
-            brand = first.xpath('./a/text()').extract_first()
-            brand_url = first.xpath('./a/@href').extract_first()
-            categary = first.xpath('./span/text()').extract_first()
-            company = first.xpath('./text()').extract()
-            company = ''.join(company).strip()
-            item = ChinassppItem()
-            item.update(self.d)
-            item['brand'] = brand
-            item['brand_url'] = brand_url  # 源语言类型
-            item['categary'] = categary.replace('行业类别：', '')
-            item['company'] = company.strip()
-            # item['url'] = response.url
-            item['project'] = self.settings.get('BOT_NAME')
-            item['spider'] = self.name
-            item['server'] = self.ip
-            yield item
+        lis = s.xpath('//*[@class="c03-3-1"]/ul/li')
+        if len(lis.extract()) == 0:
+            return
+        for li in lis:
+            # brand = li.xpath('./a/text()').extract_first()
+            brand_url = li.xpath('./a/@href').extract_first()
+            brand_url = urljoin(response.url, brand_url)
+            yield scrapy.Request(brand_url, callback=self.parse_detail)
 
-    # def errback_httpbin(self, failure):
-    #     self.logger.error(repr(failure))
+    def parse_detail(self, response):
+        s = Selector(text=response.text)
+        brand = s.xpath('//*[@class="c02-1-2-1 sty-l"]/p[2]/text()')
+        item = PaiziItem()
+        item.update(self.d)
+        item['brand'] = brand
+        item['brand_url'] = response.url  # 源语言类型
+        # item['url'] = response.url
+        item['project'] = self.settings.get('BOT_NAME')
+        item['spider'] = self.name
+        item['server'] = self.ip
+        yield item
