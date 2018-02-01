@@ -39,5 +39,5 @@ for ip in $nips; do
     echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     i_p=${ip//./_}
     out_file="/search/chenguang/meng/logs/SogouTrans/"$spider_name"_"$i_p".out"
-    nohup python $cmd_file $spider_name $ip >> $out_file 2>&1 &
+    nohup python $cmd_file $spider_name $ip > $out_file 2>&1 &
 done
