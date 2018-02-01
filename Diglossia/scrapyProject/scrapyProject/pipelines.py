@@ -24,10 +24,6 @@ class MysqlPipeline(object):
     def __init__(self, dbparams, redisparams, spider):
         self.dbparams = dbparams
         self.redisparams = redisparams
-        self.col_list = spider.col_list[1:-1]
-        col_str = ','.join(self.col_list)
-        val_str = handle_str(len(self.col_list))
-        self.in_sql = """insert into {tab} ({col}) VALUES ({val})""".format(tab=spider.name, col=col_str, val=val_str)
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -57,11 +53,15 @@ class MysqlPipeline(object):
         self._in_func(spider)
 
     def _in_func(self, spider):
+        col_list = spider.col_list[1:-1]
+        col_str = ','.join(col_list)
+        val_str = handle_str(len(col_list))
+        in_sql = """insert into {tab} ({col}) VALUES ({val})""".format(tab=spider.name, col=col_str, val=val_str)
         while 1:
             try:
                 conn = pymysql.connect(**self.dbparams)
                 cursor = conn.cursor()
-                cursor.executemany(self.in_sql, spider.items)
+                cursor.executemany(in_sql, spider.items)
                 conn.commit()
             except Exception as e:
                 logger.error(e)
@@ -72,8 +72,9 @@ class MysqlPipeline(object):
             break
 
     def process_item(self, item, spider):
-        in_args = [item[i] for i in self.col_list]
-        logger.info(item[self.col_list[0]])
+        col_list = spider.col_list[1:-1]
+        in_args = [item[i] for i in col_list]
+        logger.info(item[col_list[0]])
         if len(spider.items) > 1000:
             self._in_func(spider)
             logger.info('Insert 1000')
