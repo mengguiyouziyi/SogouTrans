@@ -15,13 +15,10 @@ sys.path.append(path)
 sys.path.append(base_path)
 sys.path.append(father_path)
 import pymysql
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class MysqlPipeline(object):
-    def __init__(self, dbparams, redisparams, spider):
+    def __init__(self, dbparams, redisparams):
         self.dbparams = dbparams
         self.redisparams = redisparams
 
@@ -42,7 +39,7 @@ class MysqlPipeline(object):
             port=crawler.settings['REDIS_HOST'],
             decode_responses=True
         )
-        return cls(dbparams, redisparams, crawler.spider)
+        return cls(dbparams, redisparams)
 
     def open_spider(self, spider):
         create(spider, self.dbparams)
@@ -64,7 +61,7 @@ class MysqlPipeline(object):
                 cursor.executemany(in_sql, spider.items)
                 conn.commit()
             except Exception as e:
-                logger.error(e)
+                spider.logger.error(e)
                 continue
             finally:
                 cursor.close()
@@ -74,10 +71,11 @@ class MysqlPipeline(object):
     def process_item(self, item, spider):
         col_list = spider.col_list[1:-1]
         in_args = [item[i] for i in col_list]
-        logger.info(item[col_list[0]])
-        if len(spider.items) > 1000:
+        spider.logger.info(item[col_list[0]])
+        l = len(spider.items)
+        if l > 1000:
             self._in_func(spider)
-            logger.info('Insert 1000')
+            spider.logger.info('Insert %d' % l)
             spider.items.clear()
         else:
             spider.items.append(in_args)
@@ -107,8 +105,8 @@ def get_column(spider, dbparams):
     try:
         conn = pymysql.connect(**dbparams)
     except Exception as e:
-        logger.error(e)
-        logger.error('获取数据表字段错误....')
+        spider.logger.error(e)
+        spider.logger.error('获取数据表字段错误....')
         # self.crawler.engine.close_spider(self.spider, 'mysql error')
     else:
         cursor = conn.cursor()
@@ -134,7 +132,7 @@ def create(spider, dbparams):
     try:
         conn = pymysql.connect(**dbparams)
     except Exception as e:
-        logger.error(e)
+        spider.logger.error(e)
     else:
         cursor = conn.cursor()
         cursor.execute(sql)
