@@ -53,16 +53,16 @@ class YdApiSpider(Spider):
         self.error_key = '%(name)s:errors' % {'name': self.name}
         self.redisparams = dict(
             host=self.settings['REDIS_HOST'],
-            port=self.settings['REDIS_HOST'],
+            port=self.settings['REDIS_PORT'],
             decode_responses=True
         )
-        self.server = self._get_redis(self.redisparams)
+        self.server = self._get_redis()
         self.server.sadd(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
         self.cookie = json.loads(self.server.srandmember(self.cookie_key))
         self.d = {}.fromkeys(self.col_dict.keys(), '')
 
-    def _get_redis(self, redisparams):
-        return StrictRedis(**redisparams)
+    def _get_redis(self):
+        return StrictRedis(**self.redisparams)
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
