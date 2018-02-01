@@ -26,6 +26,7 @@ from scrapyProject.items import YdApiItem
 
 class YdApiSpider(Spider):
     # name = 'yd_oral_zh2ko'
+    items = []
     custom_settings = {
         'DEFAULT_REQUEST_HEADERS': {
             'content-type': "application/x-www-form-urlencoded; charset=UTF-8",
@@ -33,7 +34,6 @@ class YdApiSpider(Spider):
         },
         'DOWNLOAD_DELAY': 1
     }
-    items = []
 
     def __init__(self, crawler, src, tgt, *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)

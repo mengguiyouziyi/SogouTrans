@@ -20,6 +20,7 @@ from scrapyProject.items import PaiziItem
 
 class PaiziSpider(Spider):
     name = 'paizi'
+    items = []
     custom_settings = {
         'DEFAULT_REQUEST_HEADERS': {
             'accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
