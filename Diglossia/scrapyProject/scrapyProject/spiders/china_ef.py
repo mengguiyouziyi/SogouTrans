@@ -73,7 +73,7 @@ class PaiziSpider(Spider):
                          'spider': '爬虫名', 'server': 'ip'}
         self.col_dict = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
         self.col_index_list = ['brand_zh']  # 为创建mysql表格的index而设置的属性
-        self.tab_desc = 'china-ef品牌名称'
+        self.tab_desc = 'china_ef品牌名称'
         self.ip = self._get_host_ip()
         # self.settings = self.crawler.settings
         self.d = {}.fromkeys(self.col_dict.keys(), '')

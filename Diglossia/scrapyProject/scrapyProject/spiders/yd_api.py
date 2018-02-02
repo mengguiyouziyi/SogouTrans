@@ -21,7 +21,38 @@ from redis import StrictRedis
 from urllib.parse import urlencode
 from scrapy.spiders import Spider
 from scrapy.exceptions import CloseSpider
-from scrapyProject.items import YdApiItem
+# from scrapyProject.items import YdApiItem
+from scrapy.item import Item, Field
+from scrapy.spidermiddlewares.httperror import HttpError
+from twisted.internet.error import DNSLookupError
+from twisted.internet.error import TimeoutError, TCPTimedOutError
+
+
+class YdApiItem(Item):
+    # Primary fields
+    src = Field()
+    srcType = Field()
+    zh = Field()
+    en = Field()
+    ja = Field()
+    ko = Field()
+    fr = Field()
+    ru = Field()
+    es = Field()
+    pt = Field()
+    ara = Field()
+    de = Field()
+    it = Field()
+
+    # Calculated fields
+    # images = Field()
+    # location = Field()
+
+    # Housekeeping fields
+    url = Field()
+    project = Field()
+    spider = Field()
+    server = Field()
 
 
 class YdApiSpider(Spider):
@@ -35,15 +66,15 @@ class YdApiSpider(Spider):
         'DOWNLOAD_DELAY': 1
     }
 
-    def __init__(self, settings, src, tgt, *args, **kwargs):
+    def __init__(self, settings, *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)
-        self.col_comm = {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语', 'fr': '法语',
-                         'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语', 'it': '意大利语', 'url': 'url',
-                         'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
+        self.col_comm = settings[self.name]['col_comm']
         self.col_dict = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
-        self.col_index_list = ['src']  # 为创建mysql表格的index而设置的属性
-        self.src = src
-        self.tgt = tgt
+        self.col_index_list = settings[self.name]['col_index_list']  # 为创建mysql表格的index而设置的属性
+        self.tab_desc = settings[self.name]['tab_desc']  # 表格功能描述
+
+        self.src = kwargs.get('src', 'zh')
+        self.tgt = kwargs.get('tgt', 'ja')
         self.url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
         self.ip = self._get_host_ip()
         self.cookie_dict = self._get_cookie()
@@ -152,8 +183,24 @@ class YdApiSpider(Spider):
     def errback_httpbin(self, failure):
         self.logger.error(repr(failure))
         line = failure.request.meta.get('line')
-        self.logger.error('TimeOutError on %s', line)
         self._lpush(self.request_key, line)
+        # log all failures
+        # in case you want to do something special for some errors,
+        # you may need the failure's type:
+        if failure.check(HttpError):
+            # these exceptions come from HttpError spider middleware
+            # you can get the non-200 response
+            # response = failure.value.response
+            self.logger.error('HttpError on %s', line)
+        elif failure.check(DNSLookupError):
+            # this is the original request
+            # request = failure.request
+            self.logger.error('DNSLookupError on %s', line)
+        elif failure.check(TimeoutError, TCPTimedOutError):
+            # request = failure.request
+            self.logger.error('TimeoutError on %s', line)
+        else:
+            self.logger.error('UnknowError on %s', line)
 
     def _get_cookie(self):
         url = 'http://fanyi.youdao.com/'
