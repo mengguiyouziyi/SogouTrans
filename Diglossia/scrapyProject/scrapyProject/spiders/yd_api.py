@@ -68,7 +68,7 @@ class YdApiSpider(Spider):
 
     def __init__(self, settings, *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)
-
+        self.settings = settings
         self.src = kwargs.get('src', 'zh')
         self.tgt = kwargs.get('tgt', 'ja')
         self.url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
