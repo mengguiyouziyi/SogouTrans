@@ -68,10 +68,6 @@ class YdApiSpider(Spider):
 
     def __init__(self, settings, *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)
-        self.col_comm = settings['yd_oral_zh2ko']['col_comm']
-        self.col_dict = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
-        self.col_index_list = settings['yd_oral_zh2ko']['col_index_list']  # 为创建mysql表格的index而设置的属性
-        self.tab_desc = settings['yd_oral_zh2ko']['tab_desc']  # 表格功能描述
 
         self.src = kwargs.get('src', 'zh')
         self.tgt = kwargs.get('tgt', 'ja')
@@ -91,7 +87,7 @@ class YdApiSpider(Spider):
         self.server = self._get_redis()
         self.server.sadd(self.cookie_key, json.dumps(self.cookie_dict, ensure_ascii=False))
         self.cookie = json.loads(self.server.srandmember(self.cookie_key))
-        self.d = {}.fromkeys(self.col_dict.keys(), '')
+        self.d = {}.fromkeys(OrderedDict(settings['yd_oral_zh2ko']['col_comm']).keys(), '')
 
     def _get_redis(self):
         return StrictRedis(**self.redisparams)
@@ -248,6 +244,10 @@ class YdNewsZhFrSpider(YdApiSpider):
     def __init__(self, *args, **kwargs):
         super(YdNewsZhFrSpider, self).__init__(*args, **kwargs)
         # self.tab_desc = '有道api新闻zh2fr'
+        self.col_comm = self.settings[self.name]['col_comm']
+        self.col_dict = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
+        self.col_index_list = self.settings[self.name]['col_index_list']  # 为创建mysql表格的index而设置的属性
+        self.tab_desc = self.settings[self.name]['tab_desc']  # 表格功能描述
 
 
 class YdNewsZhRuSpider(YdApiSpider):
@@ -280,6 +280,10 @@ class YdOralZhRuSpider(YdApiSpider):
     def __init__(self, *args, **kwargs):
         super(YdOralZhRuSpider, self).__init__(*args, **kwargs)
         # self.tab_desc = '有道api口语zh2ru'
+        self.col_comm = self.settings[self.name]['col_comm']
+        self.col_dict = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
+        self.col_index_list = self.settings[self.name]['col_index_list']  # 为创建mysql表格的index而设置的属性
+        self.tab_desc = self.settings[self.name]['tab_desc']  # 表格功能描述
 
 
 class YdOralZhJaSpider(YdApiSpider):
