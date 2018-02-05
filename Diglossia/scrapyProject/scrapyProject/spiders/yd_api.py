@@ -108,6 +108,7 @@ class YdApiSpider(Spider):
             # except:
             #     self.server = self._get_redis()
             #     continue
+            # -------- 部分分布式 下面一行代码不注释 ----------------
             line = self.server.rpop(self.request_key)
             if not line:
                 raise CloseSpider('no datas')
@@ -136,6 +137,7 @@ class YdApiSpider(Spider):
         }
         return data
 
+    # ---------------------------- 全部分布式代码 --------------------------------
     # def _lpush(self, key, line):
     #     while 1:
     #         try:
@@ -145,6 +147,7 @@ class YdApiSpider(Spider):
     #             continue
     #         break
 
+    # ---------------------------- 部分分布式代码 --------------------------------
     def _lpush(self, key, line):
         self.server.lpush(key, line.strip())
 
@@ -249,10 +252,6 @@ class YdNewsZhFrSpider(YdApiSpider):
     def __init__(self, *args, **kwargs):
         super(YdNewsZhFrSpider, self).__init__(*args, **kwargs)
         # self.tab_desc = '有道api新闻zh2fr'
-        self.col_comm = self.settings[self.name]['col_comm']
-        self.col_dict = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
-        self.col_index_list = self.settings[self.name]['col_index_list']  # 为创建mysql表格的index而设置的属性
-        self.tab_desc = self.settings[self.name]['tab_desc']  # 表格功能描述
 
 
 class YdNewsZhRuSpider(YdApiSpider):
@@ -285,7 +284,6 @@ class YdOralZhRuSpider(YdApiSpider):
     def __init__(self, *args, **kwargs):
         super(YdOralZhRuSpider, self).__init__(*args, **kwargs)
         # self.tab_desc = '有道api口语zh2ru'
-
 
 
 class YdOralZhJaSpider(YdApiSpider):

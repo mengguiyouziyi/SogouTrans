@@ -21,6 +21,7 @@ class MysqlPipeline(object):
     def __init__(self, dbparams, redisparams):
         self.dbparams = dbparams
         self.redisparams = redisparams
+        # -------- 部分分布式 下面一行代码不注释 ----------------
         self.conn = pymysql.connect(**self.dbparams)
 
     @classmethod
@@ -47,6 +48,7 @@ class MysqlPipeline(object):
         col_list = get_column(spider, self.dbparams)
         spider.col_list = col_list
 
+    # ---------------------------- 部分分布式代码 --------------------------------
     def close_spider(self, spider):
         self._in_func(spider)
         self.conn.close()
@@ -64,6 +66,7 @@ class MysqlPipeline(object):
             spider.logger.error(e)
         spider.logger.info('------------------Insert %d--------------------' % len(spider.items))
 
+    # ---------------------------- 全部分布式代码 ---------------------------------
     # def close_spider(self, spider):
     #     self._in_func(spider)
     #
