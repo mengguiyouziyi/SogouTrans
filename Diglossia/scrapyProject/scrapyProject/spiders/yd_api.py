@@ -56,7 +56,7 @@ class YdApiItem(Item):
 
 
 class YdApiSpider(Spider):
-    name = 'yd_oral_zh2ko'
+    # name = 'yd_oral_zh2ko'
     items = []
     custom_settings = {
         'DEFAULT_REQUEST_HEADERS': {
@@ -68,10 +68,10 @@ class YdApiSpider(Spider):
 
     def __init__(self, settings, *args, **kwargs):
         super(YdApiSpider, self).__init__(*args, **kwargs)
-        self.col_comm = settings[self.name]['col_comm']
+        self.col_comm = settings['yd_oral_zh2ko']['col_comm']
         self.col_dict = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
-        self.col_index_list = settings[self.name]['col_index_list']  # 为创建mysql表格的index而设置的属性
-        self.tab_desc = settings[self.name]['tab_desc']  # 表格功能描述
+        self.col_index_list = settings['yd_oral_zh2ko']['col_index_list']  # 为创建mysql表格的index而设置的属性
+        self.tab_desc = settings['yd_oral_zh2ko']['tab_desc']  # 表格功能描述
 
         self.src = kwargs.get('src', 'zh')
         self.tgt = kwargs.get('tgt', 'ja')
