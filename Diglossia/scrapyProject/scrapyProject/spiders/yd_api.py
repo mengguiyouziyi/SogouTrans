@@ -56,7 +56,7 @@ class YdApiItem(Item):
 
 
 class YdApiSpider(Spider):
-    # name = 'yd_oral_zh2ko'
+    name = 'yd_oral_zh2ko'
     items = []
     custom_settings = {
         'DEFAULT_REQUEST_HEADERS': {
