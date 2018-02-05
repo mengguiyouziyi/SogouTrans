@@ -235,7 +235,7 @@ class YdNewsZhEsSpider(YdApiSpider):
 
     def __init__(self, *args, **kwargs):
         super(YdNewsZhEsSpider, self).__init__(*args, **kwargs)
-        self.tab_desc = '有道api新闻zh2es'
+        # self.tab_desc = '有道api新闻zh2es'
 
 
 class YdNewsZhFrSpider(YdApiSpider):
@@ -243,7 +243,7 @@ class YdNewsZhFrSpider(YdApiSpider):
 
     def __init__(self, *args, **kwargs):
         super(YdNewsZhFrSpider, self).__init__(*args, **kwargs)
-        self.tab_desc = '有道api新闻zh2fr'
+        # self.tab_desc = '有道api新闻zh2fr'
 
 
 class YdNewsZhRuSpider(YdApiSpider):
@@ -251,7 +251,7 @@ class YdNewsZhRuSpider(YdApiSpider):
 
     def __init__(self, *args, **kwargs):
         super(YdNewsZhRuSpider, self).__init__(*args, **kwargs)
-        self.tab_desc = '有道api新闻zh2ru'
+        # self.tab_desc = '有道api新闻zh2ru'
 
 
 class YdOralZhEsSpider(YdApiSpider):
@@ -259,7 +259,7 @@ class YdOralZhEsSpider(YdApiSpider):
 
     def __init__(self, *args, **kwargs):
         super(YdOralZhEsSpider, self).__init__(*args, **kwargs)
-        self.tab_desc = '有道api口语zh2es'
+        # self.tab_desc = '有道api口语zh2es'
 
 
 class YdOralZhFrSpider(YdApiSpider):
@@ -267,7 +267,7 @@ class YdOralZhFrSpider(YdApiSpider):
 
     def __init__(self, *args, **kwargs):
         super(YdOralZhFrSpider, self).__init__(*args, **kwargs)
-        self.tab_desc = '有道api口语zh2fr'
+        # self.tab_desc = '有道api口语zh2fr'
 
 
 class YdOralZhRuSpider(YdApiSpider):
@@ -275,7 +275,7 @@ class YdOralZhRuSpider(YdApiSpider):
 
     def __init__(self, *args, **kwargs):
         super(YdOralZhRuSpider, self).__init__(*args, **kwargs)
-        self.tab_desc = '有道api口语zh2ru'
+        # self.tab_desc = '有道api口语zh2ru'
 
 
 class YdOralZhJaSpider(YdApiSpider):
@@ -283,7 +283,7 @@ class YdOralZhJaSpider(YdApiSpider):
 
     def __init__(self, *args, **kwargs):
         super(YdOralZhJaSpider, self).__init__(*args, **kwargs)
-        self.tab_desc = '有道api口语zh2ja'
+        # self.tab_desc = '有道api口语zh2ja'
 
 
 class YdOralZhKoSpider(YdApiSpider):
@@ -291,4 +291,4 @@ class YdOralZhKoSpider(YdApiSpider):
 
     def __init__(self, *args, **kwargs):
         super(YdOralZhKoSpider, self).__init__(*args, **kwargs)
-        self.tab_desc = '有道api口语zh2ko'
+        # self.tab_desc = '有道api口语zh2ko'
