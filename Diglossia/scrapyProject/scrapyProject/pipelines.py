@@ -21,6 +21,7 @@ class MysqlPipeline(object):
     def __init__(self, dbparams, redisparams):
         self.dbparams = dbparams
         self.redisparams = redisparams
+        self.conn = pymysql.connect(**self.dbparams)
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -48,26 +49,43 @@ class MysqlPipeline(object):
 
     def close_spider(self, spider):
         self._in_func(spider)
+        self.conn.close()
 
     def _in_func(self, spider):
         col_list = spider.col_list[1:-1]
         col_str = ','.join(col_list)
         val_str = handle_str(len(col_list))
         in_sql = """insert into {tab} ({col}) VALUES ({val})""".format(tab=spider.name, col=col_str, val=val_str)
-        while 1:
-            try:
-                conn = pymysql.connect(**self.dbparams)
-                cursor = conn.cursor()
-                cursor.executemany(in_sql, spider.items)
-                conn.commit()
-            except Exception as e:
-                spider.logger.error(e)
-                continue
-            finally:
-                cursor.close()
-                conn.close()
-            break
+        try:
+            cursor = self.conn.cursor()
+            cursor.executemany(in_sql, spider.items)
+            self.conn.commit()
+        except Exception as e:
+            spider.logger.error(e)
         spider.logger.info('------------------Insert %d--------------------' % len(spider.items))
+
+    # def close_spider(self, spider):
+    #     self._in_func(spider)
+    #
+    # def _in_func(self, spider):
+    #     col_list = spider.col_list[1:-1]
+    #     col_str = ','.join(col_list)
+    #     val_str = handle_str(len(col_list))
+    #     in_sql = """insert into {tab} ({col}) VALUES ({val})""".format(tab=spider.name, col=col_str, val=val_str)
+    #     while 1:
+    #         try:
+    #             conn = pymysql.connect(**self.dbparams)
+    #             cursor = conn.cursor()
+    #             cursor.executemany(in_sql, spider.items)
+    #             conn.commit()
+    #         except Exception as e:
+    #             spider.logger.error(e)
+    #             continue
+    #         finally:
+    #             cursor.close()
+    #             conn.close()
+    #         break
+    #     spider.logger.info('------------------Insert %d--------------------' % len(spider.items))
 
     def process_item(self, item, spider):
         col_list = spider.col_list[1:-1]
