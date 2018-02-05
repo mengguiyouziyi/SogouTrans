@@ -29,10 +29,9 @@ NEWSPIDER_MODULE = 'scrapyProject.spiders'
 # }
 
 # Specify the host and port to use when connecting to Redis (optional).
-# REDIS_HOST = 'localhost'
-REDIS_HOST = '106.39.246.223'
+REDIS_HOST = '10.146.252.112'
+# REDIS_HOST = '106.39.246.223'
 # REDIS_HOST = '10.142.237.97'
-# REDIS_HOST = '10.146.252.112'
 # REDIS_HOST = '10.146.254.57'
 REDIS_PORT = 50111
 
@@ -137,14 +136,16 @@ ITEM_PIPELINES = {
 }
 
 # Mysql数据库的配置信息
+MYSQL_HOST = '10.146.252.112'
+MYSQL_PORT = 3306  # 数据库端口，在dbhelper中使用
+
 # MYSQL_HOST = '10.146.254.57'
-# MYSQL_HOST = '10.146.252.112'
 # MYSQL_HOST = '10.142.237.97'
-MYSQL_HOST = '106.39.246.223'
+# MYSQL_HOST = '106.39.246.223'
 MYSQL_DBNAME = 'spider'  # 数据库名字，请修改
 MYSQL_USER = 'spider'  # 数据库账号，请修改
 MYSQL_PASSWD = 'chenguang'  # 数据库密码，请修改
-MYSQL_PORT = 50112  # 数据库端口，在dbhelper中使用
+# MYSQL_PORT = 50112  # 数据库端口，在dbhelper中使用
 
 REDIS_CLUSTER_NODES = [
     {"host": "10.142.97.92", "port": "7000"},
@@ -157,69 +158,56 @@ REDIS_CLUSTER_NODES = [
 
 TELNETCONSOLE_ENABLED = False
 
+
+# ------------------------------------ mysql 字段与描述 ---------------------------------------------------------
+yd_api_col_comm = {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语',
+                   'fr': '法语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语',
+                   'it': '意大利语', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
+brand_col_comm = {'brand_zh': '中文品牌名', 'brand_en': '英文品牌名', 'style': '品牌风格', 'comp_link': '公司官网',
+                  'addr': '地址', 'brand_url': '品牌详情页url', 'categary': '行业类别', 'company': '公司', 'url': 'url',
+                  'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
+# brand_col_comm = {'brand': '品牌名', 'brand_url': '品牌详情页url', 'categary': '行业类别',
+#                   'company': '公司', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
+
 SPIDER_CONF = {
     'yd_news_zh2es': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'es'}),
-                      'col_comm': {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语',
-                                   'fr': '法语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语',
-                                   'it': '意大利语', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'},
+                      'col_comm': yd_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2es'},
     'yd_news_zh2fr': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'fr'}),
-                      'col_comm': {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语',
-                                   'fr': '法语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语',
-                                   'it': '意大利语', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'},
+                      'col_comm': yd_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2fr'},
     'yd_news_zh2ru': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ru'}),
-                      'col_comm': {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语',
-                                   'fr': '法语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语',
-                                   'it': '意大利语', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'},
+                      'col_comm': yd_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2ru'},
     'yd_news_zh2ko': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'}),
-                      'col_comm': {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语',
-                                   'fr': '法语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语',
-                                   'it': '意大利语', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'},
+                      'col_comm': yd_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2ko'},
     'yd_news_zh2ja': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ja'}),
-                      'col_comm': {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语',
-                                   'fr': '法语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语',
-                                   'it': '意大利语', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'},
+                      'col_comm': yd_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2ja'},
     'yd_oral_zh2es': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'es'}),
-                      'col_comm': {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语',
-                                   'fr': '法语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语',
-                                   'it': '意大利语', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'},
+                      'col_comm': yd_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2es'},
     'yd_oral_zh2fr': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'fr'}),
-                      'col_comm': {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语',
-                                   'fr': '法语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语',
-                                   'it': '意大利语', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'},
+                      'col_comm': yd_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2fr'},
     'yd_oral_zh2ru': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ru'}),
-                      'col_comm': {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语',
-                                   'fr': '法语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语',
-                                   'it': '意大利语', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'},
+                      'col_comm': yd_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2ru'},
     'yd_oral_zh2ko': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'}),
-                      'col_comm': {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语',
-                                   'fr': '法语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语',
-                                   'it': '意大利语', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'},
+                      'col_comm': yd_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2ko'},
     'yd_oral_zh2ja': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ja'}),
-                      'col_comm': {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语',
-                                   'fr': '法语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语',
-                                   'it': '意大利语', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'},
+                      'col_comm': yd_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2ja'},
 
     'chinasspp': {'in_file': '', 'args': {},
-                  'col_comm': {'brand': '品牌名', 'brand_url': '品牌详情页url', 'categary': '行业类别', 'company': '公司',
-                               'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'},
+                  'col_comm': brand_col_comm,
                   'col_index_list': ['src'], 'tab_desc': 'chinasspp品牌名称'},
     'paizi': {'in_file': '', 'args': {},
-              'col_comm': {'brand': '品牌名', 'brand_url': '品牌详情页url', 'categary': '行业类别', 'company': '公司', 'url': 'url',
-                           'project': '工程名', 'spider': '爬虫名', 'server': 'ip'},
+              'col_comm': brand_col_comm,
               'col_index_list': ['src'], 'tab_desc': 'pazi品牌名称'},
     'china_ef': {'in_file': '', 'args': {},
-                 'col_comm': {'brand_zh': '中文品牌名', 'brand_en': '英文品牌名', 'style': '品牌风格', 'comp_link': '公司官网',
-                              'addr': '地址', 'brand_url': '品牌详情页url', 'categary': '行业类别', 'company': '公司', 'url': 'url',
-                              'project': '工程名', 'spider': '爬虫名', 'server': 'ip'},
+                 'col_comm': brand_col_comm,
                  'col_index_list': ['src'], 'tab_desc': 'china_ef品牌名称'},
 }

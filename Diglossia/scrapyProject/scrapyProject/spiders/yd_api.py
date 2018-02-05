@@ -102,11 +102,12 @@ class YdApiSpider(Spider):
 
     def start_requests(self):
         while 1:
-            try:
-                line = self.server.rpop(self.request_key)
-            except:
-                self.server = self._get_redis()
-                continue
+            # try:
+            #     line = self.server.rpop(self.request_key)
+            # except:
+            #     self.server = self._get_redis()
+            #     continue
+            line = self.server.rpop(self.request_key)
             if not line:
                 raise CloseSpider('no datas')
             data = self._get_params(line)
@@ -134,14 +135,17 @@ class YdApiSpider(Spider):
         }
         return data
 
+    # def _lpush(self, key, line):
+    #     while 1:
+    #         try:
+    #             self.server.lpush(key, line.strip())
+    #         except:
+    #             self.server = self._get_redis()
+    #             continue
+    #         break
+
     def _lpush(self, key, line):
-        while 1:
-            try:
-                self.server.lpush(key, line.strip())
-            except:
-                self.server = self._get_redis()
-                continue
-            break
+        self.server.lpush(key, line.strip())
 
     def parse_httpbin(self, response):
         line = response.meta.get('line')
