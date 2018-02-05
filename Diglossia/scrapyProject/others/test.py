@@ -38,7 +38,7 @@ def _get_host_ip():
 
 if __name__ == '__main__':
     set_adsl.set_interface('10.146.254.57')
-    r = {'host': '10.146.252.112', 'port': 50111}
+    r = {'host': '10.142.97.80', 'port': 50111}
     # m = {'host': '10.146.252.112', 'port': 50112}
     test_redis(**r)
     # test_mysql(**m)
