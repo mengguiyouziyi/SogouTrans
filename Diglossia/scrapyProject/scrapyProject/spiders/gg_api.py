@@ -144,7 +144,7 @@ class GGApiSpider(Spider):
         if len(trans_list) != len(sours_list):
             self.logger.error('Source not equal translation on %s', lines[0])
             self._lpush(self.request_key, lines)
-            return 
+            return
         for tran, sour in zip(trans_list, sours_list):
             item = GGApiItem()
             item.update(self.d)
@@ -214,6 +214,27 @@ class GGNewsZhRuSpider(GGApiSpider):
         super(GGNewsZhRuSpider, self).__init__(*args, **kwargs)
 
 
+class GGNewsZhDeSpider(GGApiSpider):
+    name = 'gg_news_zh2de'
+
+    def __init__(self, *args, **kwargs):
+        super(GGNewsZhDeSpider, self).__init__(*args, **kwargs)
+
+
+class GGNewsZhJpSpider(GGApiSpider):
+    name = 'gg_news_zh2jp'
+
+    def __init__(self, *args, **kwargs):
+        super(GGNewsZhJpSpider, self).__init__(*args, **kwargs)
+
+
+class GGNewsZhKoSpider(GGApiSpider):
+    name = 'gg_news_zh2ko'
+
+    def __init__(self, *args, **kwargs):
+        super(GGNewsZhKoSpider, self).__init__(*args, **kwargs)
+
+
 class GGOralZhEsSpider(GGApiSpider):
     name = 'gg_oral_zh2es'
 
@@ -233,6 +254,13 @@ class GGOralZhRuSpider(GGApiSpider):
 
     def __init__(self, *args, **kwargs):
         super(GGOralZhRuSpider, self).__init__(*args, **kwargs)
+
+
+class GGOralZhDeSpider(GGApiSpider):
+    name = 'gg_oral_zh2de'
+
+    def __init__(self, *args, **kwargs):
+        super(GGOralZhDeSpider, self).__init__(*args, **kwargs)
 
 
 class GGOralZhJpSpider(GGApiSpider):

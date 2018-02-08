@@ -215,7 +215,7 @@ SPIDER_CONF = {
     'gg_news_zh2ko': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'}),
                       'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '谷歌api新闻zh2ko'},
-    'yd_news_zh2jp': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'jp'}),
+    'gg_news_zh2jp': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'jp'}),
                       'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '谷歌api新闻zh2jp'},
 
