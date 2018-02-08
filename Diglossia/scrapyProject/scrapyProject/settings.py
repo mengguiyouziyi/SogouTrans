@@ -158,49 +158,84 @@ REDIS_CLUSTER_NODES = [
 
 TELNETCONSOLE_ENABLED = False
 
-
 # ------------------------------------ mysql 字段与描述 ---------------------------------------------------------
-yd_api_col_comm = {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语',
-                   'fr': '法语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语',
-                   'it': '意大利语', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
+trans_api_col_comm = {'src': '源语言', 'srcType': '源语言种类', 'zh': '中文', 'en': '英文', 'jp': '日语', 'ko': '韩语',
+                      'fr': '法语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'ara': '阿拉伯语', 'de': '德语',
+                      'it': '意大利语', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
 brand_col_comm = {'brand_zh': '中文品牌名', 'brand_en': '英文品牌名', 'style': '品牌风格', 'comp_link': '公司官网',
                   'addr': '地址', 'brand_url': '品牌详情页url', 'categary': '行业类别', 'company': '公司', 'url': 'url',
                   'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
 # brand_col_comm = {'brand': '品牌名', 'brand_url': '品牌详情页url', 'categary': '行业类别',
 #                   'company': '公司', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
-
+col_d = {'col_comm': trans_api_col_comm, 'col_index_list': ['src']}
+news1617 = oral800w = col_d.copy()
+news1617.update({'in_file': 'news1617.zh'})
+oral800w.update({'in_file': 'oral800w.zh'})
 SPIDER_CONF = {
+    # ----------------------------------------- yd ---------------------------------------------
     'yd_news_zh2es': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'es'}),
-                      'col_comm': yd_api_col_comm,
+                      'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2es'},
     'yd_news_zh2fr': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'fr'}),
-                      'col_comm': yd_api_col_comm,
+                      'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2fr'},
     'yd_news_zh2ru': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ru'}),
-                      'col_comm': yd_api_col_comm,
+                      'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2ru'},
     'yd_news_zh2ko': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'}),
-                      'col_comm': yd_api_col_comm,
+                      'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2ko'},
-    'yd_news_zh2ja': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ja'}),
-                      'col_comm': yd_api_col_comm,
-                      'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2ja'},
+    'yd_news_zh2jp': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'jp'}),
+                      'col_comm': trans_api_col_comm,
+                      'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2jp'},
     'yd_oral_zh2es': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'es'}),
-                      'col_comm': yd_api_col_comm,
+                      'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2es'},
     'yd_oral_zh2fr': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'fr'}),
-                      'col_comm': yd_api_col_comm,
+                      'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2fr'},
     'yd_oral_zh2ru': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ru'}),
-                      'col_comm': yd_api_col_comm,
+                      'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2ru'},
     'yd_oral_zh2ko': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'}),
-                      'col_comm': yd_api_col_comm,
+                      'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2ko'},
-    'yd_oral_zh2ja': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ja'}),
-                      'col_comm': yd_api_col_comm,
-                      'col_index_list': ['src'], 'tab_desc': '有道api口语zh2ja'},
+    'yd_oral_zh2jp': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'jp'}),
+                      'col_comm': trans_api_col_comm,
+                      'col_index_list': ['src'], 'tab_desc': '有道api口语zh2jp'},
+    # ----------------------------------------- gg ---------------------------------------------
+    'gg_news_zh2es': news1617.update({'args': {'src': 'zh', 'tgt': 'es'}, 'tab_desc': '谷歌api新闻zh2es'}) or news1617,
+    'gg_news_zh2fr': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'fr'}),
+                      'col_comm': trans_api_col_comm,
+                      'col_index_list': ['src'], 'tab_desc': '谷歌api新闻zh2fr'},
+    'gg_news_zh2ru': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ru'}),
+                      'col_comm': trans_api_col_comm,
+                      'col_index_list': ['src'], 'tab_desc': '谷歌api新闻zh2ru'},
+    'gg_news_zh2de': news1617.update({'args': {'src': 'zh', 'tgt': 'de'}, 'tab_desc': '谷歌api新闻zh2de'}) or news1617,
+    'gg_news_zh2ko': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'}),
+                      'col_comm': trans_api_col_comm,
+                      'col_index_list': ['src'], 'tab_desc': '谷歌api新闻zh2ko'},
+    'yd_news_zh2jp': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'jp'}),
+                      'col_comm': trans_api_col_comm,
+                      'col_index_list': ['src'], 'tab_desc': '谷歌api新闻zh2jp'},
 
+    'gg_oral_zh2es': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'es'}),
+                      'col_comm': trans_api_col_comm,
+                      'col_index_list': ['src'], 'tab_desc': '谷歌api口语zh2es'},
+    'gg_oral_zh2fr': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'fr'}),
+                      'col_comm': trans_api_col_comm,
+                      'col_index_list': ['src'], 'tab_desc': '谷歌api口语zh2fr'},
+    'gg_oral_zh2ru': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ru'}),
+                      'col_comm': trans_api_col_comm,
+                      'col_index_list': ['src'], 'tab_desc': '谷歌api口语zh2ru'},
+    'gg_oral_zh2de': oral800w.update({'args': {'src': 'zh', 'tgt': 'de'}, 'tab_desc': '谷歌api口语zh2de'}) or oral800w,
+    'gg_oral_zh2ko': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'}),
+                      'col_comm': trans_api_col_comm,
+                      'col_index_list': ['src'], 'tab_desc': '谷歌api口语zh2ko'},
+    'gg_oral_zh2jp': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'jp'}),
+                      'col_comm': trans_api_col_comm,
+                      'col_index_list': ['src'], 'tab_desc': '谷歌api口语zh2jp'},
+    # ----------------------------------------- brand ---------------------------------------------
     'chinasspp': {'in_file': '', 'args': {},
                   'col_comm': brand_col_comm,
                   'col_index_list': ['src'], 'tab_desc': 'chinasspp品牌名称'},
@@ -211,3 +246,9 @@ SPIDER_CONF = {
                  'col_comm': brand_col_comm,
                  'col_index_list': ['src'], 'tab_desc': 'china_ef品牌名称'},
 }
+LANG = {'yd': {'zh': 'zh-CHS', 'en': 'en', 'jp': 'ja', 'ko': 'ko', 'fr': 'fr', 'es': 'es', 'ru': 'ru'},
+        'bi': {'zh': 'zh-CHS', 'en': 'en', 'jp': 'ja', 'ko': 'ko', 'fr': 'fr', 'es': 'es', 'ru': 'ru', 'de': 'de'},
+        'sg': {'zh': 'zh-CHS', 'en': 'en', 'jp': 'ja', 'ko': 'ko', 'fr': 'fr', 'es': 'es', 'ru': 'ru', 'de': 'de'},
+        'tx': {'zh': 'zh', 'en': 'en', 'jp': 'jp', 'ko': 'kr', 'fr': 'fr', 'es': 'es', 'ru': 'ru', 'de': 'de'},
+        'bd': {'zh': 'zh', 'en': 'en', 'jp': 'jp', 'ko': 'kor', 'fr': 'fra', 'es': 'spa', 'ru': 'ru', 'de': 'de'},
+        'gg': {'zh': 'zh-CN', 'en': 'en', 'jp': 'ja', 'ko': 'ko', 'fr': 'fr', 'es': 'es', 'ru': 'ru', 'de': 'de'}}

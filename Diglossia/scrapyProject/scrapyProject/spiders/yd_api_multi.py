@@ -90,11 +90,12 @@ class YdApiSpider(Spider):
         return cls(crawler)
 
     def start_requests(self):
-        aux = ''
         # num = 0
-        for i in range(30):
-            line = self.server.rpop(self.request_key)
-            aux += (line + '\n')
+        while 1:
+            aux = ''
+            for i in range(30):
+                line = self.server.rpop(self.request_key)
+                aux += (line + '\n')
 
         # while 1:
         #     line = self.server.rpop(self.request_key)

@@ -20,6 +20,7 @@ def translate(lines, fr, t):
     }
     try:
         resp = requests.post(url, headers=headers, data=data).json()
+        print(resp)
         if resp.get('errorCode') != '0':
             return
         trans = resp.get('dit')
@@ -39,12 +40,25 @@ def main(f1, lines):
 
 
 if __name__ == '__main__':
-    with codecs.open('./source/zh2ko/oral1600.zh', 'r', 'utf-8') as f, codecs.open('./result/zh2ko/oral1600.zh.ko', 'w',
-                                                                                   'utf-8') as f1:
-        for line in f:
-            print(line)
-            if line == '\n':
-                print('no line')
-                f1.write('\n')
-                continue
-            main(f1, line)
+    lines = """
+    Ce n'est pas grave. Si tu ne comprends pas, laisse tomber. En tout cas, je ne l'ai pas dit. 
+qwqwqwqwqwqwqwqw
+Parfois, elle caresse tendrement l'écriture imprimée avec les doigts.
+Bien que le monde soit beau, il y a beaucoup de déboires qui m'ont obligé à vouloir me suicider. 
+
+"""
+    lines = """我么事中
+    qwqwqwqwqwqwqwqw
+    你们是
+    """
+    trans = translate(lines, 'de', 'zh-CHS')
+    print(trans)
+    # with codecs.open('./source/zh2ko/oral1600.zh', 'r', 'utf-8') as f, codecs.open('./result/zh2ko/oral1600.zh.ko', 'w',
+    #                                                                                'utf-8') as f1:
+    #     for line in f:
+    #         print(line)
+    #         if line == '\n':
+    #             print('no line')
+    #             f1.write('\n')
+    #             continue
+    #         main(f1, line)
