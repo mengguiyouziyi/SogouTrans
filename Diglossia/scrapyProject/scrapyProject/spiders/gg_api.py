@@ -13,8 +13,6 @@ import json
 import execjs
 import socket
 import random
-import requests
-import time
 from collections import OrderedDict
 from redis import StrictRedis
 from scrapy import FormRequest
@@ -140,7 +138,7 @@ class GGApiSpider(Spider):
                     yield request
                     raise CloseSpider('No datas, close spider...')
                 lines += (line + '\n')
-                if len(lines) >= 4900:
+                if len(lines) >= 4000:
                     break
             lines = lines.strip()
             url = self.url + self.js.getTk(lines)
