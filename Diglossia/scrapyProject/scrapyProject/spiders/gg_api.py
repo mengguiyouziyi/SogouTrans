@@ -98,14 +98,14 @@ class GGApiSpider(Spider):
                 line = self.server.rpop(self.request_key)
                 if not line:
                     data = self._get_params(lines)
-                    request.body = data
+                    request.replace('body', data)
                     request.meta['lines'] = lines
                     yield request
                     raise CloseSpider('No datas, close spider...')
                 lines += (line + '\n')
                 lines = lines.strip()
             data = self._get_params(lines)
-            request.body = data
+            request.replace('body', data)
             request.meta['lines'] = lines
             yield request
 
