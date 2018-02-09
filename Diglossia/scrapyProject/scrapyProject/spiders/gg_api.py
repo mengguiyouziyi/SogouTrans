@@ -192,9 +192,9 @@ class GGApiSpider(Spider):
             item['src'] = sour
             item['srcType'] = self.lsrc  # 源语言类型
             item[self.ltgt] = tran
-            item['url'] = response.url
-            item['project'] = self.settings.get('BOT_NAME')
-            item['spider'] = self.name
+            # item['url'] = response.url
+            # item['project'] = self.settings.get('BOT_NAME')
+            # item['spider'] = self.name
             item['server'] = self.ip
             yield item
 
