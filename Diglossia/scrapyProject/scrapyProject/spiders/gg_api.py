@@ -140,7 +140,7 @@ class GGApiSpider(Spider):
                     yield request
                     raise CloseSpider('No datas, close spider...')
                 lines += (line + '\n')
-                if len(lines) >= 3500:
+                if len(lines) >= 4900:
                     break
             lines = lines.strip()
             url = self.url + self.js.getTk(lines)
