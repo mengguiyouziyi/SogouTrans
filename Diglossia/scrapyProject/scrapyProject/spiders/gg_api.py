@@ -106,6 +106,7 @@ class GGApiSpider(Spider):
                 lines += (line + '\n')
                 lines = lines.strip()
             data = self._get_params(lines)
+            print(data)
             request = Request(self.url, method='GET', body=data, callback=self.parse_httpbin)
             request.meta['lines'] = lines
             yield request
