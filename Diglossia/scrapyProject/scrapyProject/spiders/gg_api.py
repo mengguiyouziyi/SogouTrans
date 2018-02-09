@@ -16,6 +16,7 @@ import socket
 from collections import OrderedDict
 from redis import StrictRedis
 from urllib.parse import urlencode
+from scrapy import Request
 from scrapy.spiders import Spider
 from scrapy.exceptions import CloseSpider
 from scrapy.item import Item, Field
@@ -91,21 +92,22 @@ class GGApiSpider(Spider):
         return cls(crawler.settings, *args, **kwargs)
 
     def start_requests(self):
-        request = scrapy.Request(self.url, method='GET', callback=self.parse_httpbin, errback=self.errback_httpbin)
         while 1:
             lines = ''
             for i in range(30):
                 line = self.server.rpop(self.request_key)
                 if not line:
                     data = self._get_params(lines)
-                    request.replace('body', data)
+                    request = Request(self.url, method='GET', body=data, callback=self.parse_httpbin,
+                                      errback=self.errback_httpbin)
                     request.meta['lines'] = lines
                     yield request
                     raise CloseSpider('No datas, close spider...')
                 lines += (line + '\n')
                 lines = lines.strip()
             data = self._get_params(lines)
-            request.replace('body', data)
+            request = Request(self.url, method='GET', body=data, callback=self.parse_httpbin,
+                              errback=self.errback_httpbin)
             request.meta['lines'] = lines
             yield request
 
