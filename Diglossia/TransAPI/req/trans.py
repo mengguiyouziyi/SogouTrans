@@ -931,8 +931,8 @@ class Niutrans(object):
 if __name__ == '__main__':
     """<youdao bing sogou tencent baidu google>"""
     api = 'google'
-    langf = 'es'
-    langt = 'zh'
+    langf = 'zh'
+    langt = 'de'
     kwargs = dict(api=api, langf=langf, langt=langt, inf='./source/{1}{0}.{0}'.format(langf, langt),
-                  outf='./result/{2}{0}_{1}.{0}2{2}'.format(langf, api, langt), st=2, lnum=10)
+                  outf='./result/{2}{0}_{1}.{0}2{2}'.format(langf, api, langt), st=2, lnum=30)
     Trans(**kwargs).main()

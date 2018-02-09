@@ -10,7 +10,6 @@ path = dirname(os.path.abspath(dirname(__file__)))
 sys.path.append(path)
 sys.path.append(base_path)
 sys.path.append(father_path)
-from collections import OrderedDict
 
 BOT_NAME = 'scrapyProject'
 
@@ -48,7 +47,7 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 1
+# DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # CONCURRENT_REQUESTS_PER_IP = 16
@@ -65,7 +64,7 @@ RETRY_TIMES = 3
 RETRY_HTTP_CODES = [500, 502, 503, 504, 408, 429]
 # REDIRECT_ENABLED = False
 
-DOWNLOAD_TIMEOUT = 30
+DOWNLOAD_TIMEOUT = 60
 
 USER_AGENT_CHOICES = [
     'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0_3 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Mobile/15A432',
@@ -117,7 +116,7 @@ USER_AGENT_CHOICES = [
 DOWNLOADER_MIDDLEWARES = {
     # 'scrapyProject.middlewares.ProxyMiddleware': 1,
     # 'scrapyProject.middlewares.RetryMiddleware': 110,
-    'scrapyProject.middlewares.RotateUserAgentMiddleware': 3,
+    # 'scrapyProject.middlewares.RotateUserAgentMiddleware': 3,
     # 'cnn_scrapy.middlewares.BloomfilterMiddleware': 2,
     # 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': None,
 }
@@ -169,72 +168,55 @@ brand_col_comm = {'brand_zh': '中文品牌名', 'brand_en': '英文品牌名', 
 #                   'company': '公司', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
 col_d = {'col_comm': trans_api_col_comm, 'col_index_list': ['src']}
 news1617 = oral800w = col_d.copy()
-news1617.update({'in_file': 'news1617.zh'})
-oral800w.update({'in_file': 'oral800w.zh'})
+news1617 = news1617.update({'in_file': 'news1617.zh'}) or news1617
+oral800w = oral800w.update({'in_file': 'oral800w.zh'}) or oral800w
 SPIDER_CONF = {
     # ----------------------------------------- yd ---------------------------------------------
-    'yd_news_zh2es': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'es'}),
+    'yd_news_zh2es': {'in_file': 'news1617.zh', 'args': {'src': 'zh', 'tgt': 'es'},
                       'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2es'},
-    'yd_news_zh2fr': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'fr'}),
+    'yd_news_zh2fr': {'in_file': 'news1617.zh', 'args': {'src': 'zh', 'tgt': 'fr'},
                       'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2fr'},
-    'yd_news_zh2ru': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ru'}),
+    'yd_news_zh2ru': {'in_file': 'news1617.zh', 'args': {'src': 'zh', 'tgt': 'ru'},
                       'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2ru'},
-    'yd_news_zh2ko': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'}),
+    'yd_news_zh2ko': {'in_file': 'news1617.zh', 'args': {'src': 'zh', 'tgt': 'ko'},
                       'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2ko'},
-    'yd_news_zh2jp': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'jp'}),
+    'yd_news_zh2jp': {'in_file': 'news1617.zh', 'args': {'src': 'zh', 'tgt': 'jp'},
                       'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api新闻zh2jp'},
-    'yd_oral_zh2es': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'es'}),
+    'yd_oral_zh2es': {'in_file': 'oral800w.zh', 'args': {'src': 'zh', 'tgt': 'es'},
                       'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2es'},
-    'yd_oral_zh2fr': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'fr'}),
+    'yd_oral_zh2fr': {'in_file': 'oral800w.zh', 'args': {'src': 'zh', 'tgt': 'fr'},
                       'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2fr'},
-    'yd_oral_zh2ru': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ru'}),
+    'yd_oral_zh2ru': {'in_file': 'oral800w.zh', 'args': {'src': 'zh', 'tgt': 'ru'},
                       'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2ru'},
-    'yd_oral_zh2ko': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'}),
+    'yd_oral_zh2ko': {'in_file': 'oral800w.zh', 'args': {'src': 'zh', 'tgt': 'ko'},
                       'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2ko'},
-    'yd_oral_zh2jp': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'jp'}),
+    'yd_oral_zh2jp': {'in_file': 'oral800w.zh', 'args': {'src': 'zh', 'tgt': 'jp'},
                       'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2jp'},
     # ----------------------------------------- gg ---------------------------------------------
-    'gg_news_zh2es': news1617.update({'args': {'src': 'zh', 'tgt': 'es'}, 'tab_desc': '谷歌api新闻zh2es'}) or news1617,
-    'gg_news_zh2fr': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'fr'}),
-                      'col_comm': trans_api_col_comm,
-                      'col_index_list': ['src'], 'tab_desc': '谷歌api新闻zh2fr'},
-    'gg_news_zh2ru': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ru'}),
-                      'col_comm': trans_api_col_comm,
-                      'col_index_list': ['src'], 'tab_desc': '谷歌api新闻zh2ru'},
-    'gg_news_zh2de': news1617.update({'args': {'src': 'zh', 'tgt': 'de'}, 'tab_desc': '谷歌api新闻zh2de'}) or news1617,
-    'gg_news_zh2ko': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'}),
-                      'col_comm': trans_api_col_comm,
-                      'col_index_list': ['src'], 'tab_desc': '谷歌api新闻zh2ko'},
-    'gg_news_zh2jp': {'in_file': 'news1617.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'jp'}),
-                      'col_comm': trans_api_col_comm,
-                      'col_index_list': ['src'], 'tab_desc': '谷歌api新闻zh2jp'},
+    'gg_news_zh2es': dict({'args': {'src': 'zh', 'tgt': 'es'}, 'tab_desc': '谷歌api新闻zh2es'}, **news1617),
+    'gg_news_zh2fr': dict({'args': {'src': 'zh', 'tgt': 'fr'}, 'tab_desc': '谷歌api新闻zh2fr'}, **news1617),
+    'gg_news_zh2ru': dict({'args': {'src': 'zh', 'tgt': 'ru'}, 'tab_desc': '谷歌api新闻zh2ru'}, **news1617),
+    'gg_news_zh2de': dict({'args': {'src': 'zh', 'tgt': 'de'}, 'tab_desc': '谷歌api新闻zh2de'}, **news1617),
+    'gg_news_zh2ko': dict({'args': {'src': 'zh', 'tgt': 'ko'}, 'tab_desc': '谷歌api新闻zh2ko'}, **news1617),
+    'gg_news_zh2jp': dict({'args': {'src': 'zh', 'tgt': 'jp'}, 'tab_desc': '谷歌api新闻zh2jp'}, **news1617),
 
-    'gg_oral_zh2es': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'es'}),
-                      'col_comm': trans_api_col_comm,
-                      'col_index_list': ['src'], 'tab_desc': '谷歌api口语zh2es'},
-    'gg_oral_zh2fr': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'fr'}),
-                      'col_comm': trans_api_col_comm,
-                      'col_index_list': ['src'], 'tab_desc': '谷歌api口语zh2fr'},
-    'gg_oral_zh2ru': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ru'}),
-                      'col_comm': trans_api_col_comm,
-                      'col_index_list': ['src'], 'tab_desc': '谷歌api口语zh2ru'},
-    'gg_oral_zh2de': oral800w.update({'args': {'src': 'zh', 'tgt': 'de'}, 'tab_desc': '谷歌api口语zh2de'}) or oral800w,
-    'gg_oral_zh2ko': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'ko'}),
-                      'col_comm': trans_api_col_comm,
-                      'col_index_list': ['src'], 'tab_desc': '谷歌api口语zh2ko'},
-    'gg_oral_zh2jp': {'in_file': 'oral800w.zh', 'args': OrderedDict({'src': 'zh', 'tgt': 'jp'}),
-                      'col_comm': trans_api_col_comm,
-                      'col_index_list': ['src'], 'tab_desc': '谷歌api口语zh2jp'},
+    'gg_oral_zh2es': dict({'args': {'src': 'zh', 'tgt': 'es'}, 'tab_desc': '谷歌api口语zh2es'}, **oral800w),
+    'gg_oral_zh2fr': dict({'args': {'src': 'zh', 'tgt': 'fr'}, 'tab_desc': '谷歌api口语zh2fr'}, **oral800w),
+    'gg_oral_zh2ru': dict({'args': {'src': 'zh', 'tgt': 'ru'}, 'tab_desc': '谷歌api口语zh2ru'}, **oral800w),
+    'gg_oral_zh2de': dict({'args': {'src': 'zh', 'tgt': 'de'}, 'tab_desc': '谷歌api口语zh2de'}, **oral800w),
+    'gg_oral_zh2ko': dict({'args': {'src': 'zh', 'tgt': 'ko'}, 'tab_desc': '谷歌api口语zh2ko'}, **oral800w),
+    'gg_oral_zh2jp': dict({'args': {'src': 'zh', 'tgt': 'jp'}, 'tab_desc': '谷歌api口语zh2jp'}, **oral800w),
+
     # ----------------------------------------- brand ---------------------------------------------
     'chinasspp': {'in_file': '', 'args': {},
                   'col_comm': brand_col_comm,

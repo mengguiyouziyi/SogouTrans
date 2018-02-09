@@ -93,9 +93,9 @@ class MysqlPipeline(object):
     def process_item(self, item, spider):
         col_list = spider.col_list[1:-1]
         in_args = [item[i] for i in col_list]
-        spider.logger.info(item[col_list[0]])
+        # spider.logger.info(item[col_list[0]])
         l = len(spider.items)
-        if l >= 200:
+        if l >= 2000:
             self._in_func(spider)
             spider.items.clear()
         else:

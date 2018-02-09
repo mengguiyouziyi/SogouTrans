@@ -9,14 +9,15 @@ path = dirname(os.path.abspath(dirname(__file__)))
 sys.path.append(path)
 sys.path.append(base_path)
 sys.path.append(father_path)
-import scrapy
 import json
 import execjs
 import socket
+import random
+import requests
+import time
 from collections import OrderedDict
 from redis import StrictRedis
-from urllib.parse import urlencode
-from scrapy import Request
+from scrapy import FormRequest
 from scrapy.spiders import Spider
 from scrapy.exceptions import CloseSpider
 from scrapy.item import Item, Field
@@ -55,24 +56,45 @@ class GGApiItem(Item):
 class GGApiSpider(Spider):
     items = []
     custom_settings = {
-        'DOWNLOAD_DELAY': 1
+        # 'DEFAULT_REQUEST_HEADERS': {
+        #     'accept': "*/*",
+        #     'accept-encoding': "gzip, deflate, br",
+        #     'accept-language': "zh-CN,zh;q=0.9,en;q=0.8",
+        #     # 'content-length': "30157",
+        #     'content-type': "application/x-www-form-urlencoded;charset=UTF-8",
+        #     'cookie': "_ga=GA1.3.1749489104.1517825006; _gid=GA1.3.2065408570.1517825006; 1P_JAR=2018-2-5-10; NID=123=Dk4jQsFbSXetDY4-vOom37rmfR4jSpgDFa2JUIOQgpmqvYmsbn5pdcCrrBQGCt0Pt1xfPEI1MEGLTb0eIMGWg_O8AVduafbQvP1LE31OjspUrJgEc7j0rltZrYQMcARW; _ga=GA1.3.1749489104.1517825006; _gid=GA1.3.1646155647.1518147293; 1P_JAR=2018-2-9-4; NID=123=Yk_CPhKtaKKXbebtXDx_xk316howhCqe9DtNImaLCWAUd0hN0_wGMthhr_s_i0GnmSo-o7KE-5o6nazCBCQI7KXUiDMxEmyeYqtu3qzCTOdnAmYeUCd7jZH4OT6YBTkw",
+        #     'origin': "https://translate.google.cn",
+        #     'referer': "https://translate.google.cn/",
+        #     # 'user-agent': "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36",
+        #     'x-chrome-uma-enabled': "1",
+        #     'x-client-data': "CKa1yQEIkrbJAQijtskBCMG2yQEI+pzKAQipncoBCKijygE=",
+        #     'cache-control': "no-cache",
+        #     # 'postman-token': "55d46e0f-9883-dca4-c1ec-c140ea0f827b"
+        # },
+        # 'DOWNLOAD_DELAY': 1
     }
 
     def __init__(self, settings, *args, **kwargs):
         super(GGApiSpider, self).__init__(*args, **kwargs)
         self.js = Py4Js()
         self.settings = settings
+        self.uas = settings['USER_AGENT_CHOICES']
         self.col_comm = self.settings['SPIDER_CONF'][self.name]['col_comm']
         self.col_dict = OrderedDict(self.col_comm)  # 为创建mysql表格的column而设置的属性
         self.col_index_list = self.settings['SPIDER_CONF'][self.name]['col_index_list']  # 为创建mysql表格的index而设置的属性
         self.tab_desc = self.settings['SPIDER_CONF'][self.name]['tab_desc']  # 表格功能描述
         lang_dict = settings['LANG'][self.name[:2]]
-        self.lsrc = kwargs.get('src', 'zh')  # 标准语言简称
-        self.ltgt = kwargs.get('tgt', 'jp')
-        self.src = lang_dict[kwargs.get('src', 'zh')]  # 各网站自己的语言标识
-        self.tgt = lang_dict[kwargs.get('tgt', 'jp')]
-        self.url = 'https://translate.google.cn/translate_a/single?%s'
+        self.lsrc = kwargs.get('src', '')  # 标准语言简称
+        self.ltgt = kwargs.get('tgt', '')
+        try:
+            self.src = lang_dict[self.lsrc]  # 各网站自己的语言标识
+            self.tgt = lang_dict[self.ltgt]
+        except:
+            raise CloseSpider('Dont have src or tgt!')
+        self.url = 'https://translate.google.cn/translate_a/single?client=t&sl={src}&tl={tgt}&hl=zh-CN&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&ie=UTF-8&oe=UTF-8&otf=1&pc=1&ssel=4&tsel=4&kc=2&tk='.format(
+            src=self.src, tgt=self.tgt)
         self.ip = self._get_host_ip()
+        # self.cookie = self._get_cookie()
         self.request_key = '%(name)s:requests' % {'name': self.name}
         self.error_key = '%(name)s:errors' % {'name': self.name}
 
@@ -84,6 +106,19 @@ class GGApiSpider(Spider):
         self.server = self._get_redis()
         self.d = {}.fromkeys(self.col_dict.keys(), '')  # 用于item初始化
 
+    # def _get_cookie(self):
+    #     url = 'https://translate.google.cn/'
+    #     headers = {'User-Agent': random.choice(self.uas)}
+    #     while 1:
+    #         try:
+    #             response = requests.get(url=url, headers=headers)
+    #         except:
+    #             time.sleep(3)
+    #             continue
+    #         break
+    #     cookie_dict = dict(response.cookies.items())
+    #     return cookie_dict
+
     def _get_redis(self):
         return StrictRedis(**self.redisparams)
 
@@ -94,28 +129,32 @@ class GGApiSpider(Spider):
     def start_requests(self):
         while 1:
             lines = ''
-            for i in range(30):
+            for i in range(1000):
                 line = self.server.rpop(self.request_key)
                 if not line:
-                    data = self._get_params(lines)
-                    request = Request(self.url % data, method='GET', callback=self.parse_httpbin,
-                                      errback=self.errback_httpbin)
+                    url = self.url + self.js.getTk(lines)
+                    request = FormRequest(url, method='POST', callback=self.parse_httpbin, formdata={'q': lines},
+                                          headers={'User-Agent': random.choice(self.uas)},
+                                          errback=self.errback_httpbin)
                     request.meta['lines'] = lines
                     yield request
                     raise CloseSpider('No datas, close spider...')
                 lines += (line + '\n')
-                lines = lines.strip()
-            data = self._get_params(lines)
-            request = Request(self.url % data, method='GET', callback=self.parse_httpbin,
-                              errback=self.errback_httpbin)
+                if len(lines) >= 4900:
+                    break
+            lines = lines.strip()
+            url = self.url + self.js.getTk(lines)
+            request = FormRequest(url, method='POST', callback=self.parse_httpbin, formdata={'q': lines},
+                                  headers={'User-Agent': random.choice(self.uas)},
+                                  errback=self.errback_httpbin)
             request.meta['lines'] = lines
             yield request
 
-    def _get_params(self, lines):
-        data = {"client": "t", "sl": self.src, "tl": self.tgt, "hl": "zh-CN",
-                "dt": ["at", "bd", "ex", "ld", "md", "qca", "rw", "rm", "ss", "t"], "ie": "UTF-8", "oe": "UTF-8",
-                "source": "btn", "ssel": "4", "tsel": "3", "kc": "0", "tk": self.js.getTk(lines), "q": lines}
-        return urlencode(data)
+    # def _get_params(self, lines):
+    #     data = {"client": "t", "sl": self.src, "tl": self.tgt, "hl": "zh-CN",
+    #             "dt": ["at", "bd", "ex", "ld", "md", "qca", "rw", "rm", "ss", "t"], "ie": "UTF-8", "oe": "UTF-8",
+    #             "source": "btn", "ssel": "4", "tsel": "3", "kc": "0", "tk": self.js.getTk(lines), "q": lines}
+    #     return data
 
     def _lpush(self, key, lines):
         for line in lines.split('\n'):
