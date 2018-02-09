@@ -71,7 +71,7 @@ class GGApiSpider(Spider):
         self.ltgt = kwargs.get('tgt', 'jp')
         self.src = lang_dict[kwargs.get('src', 'zh')]  # 各网站自己的语言标识
         self.tgt = lang_dict[kwargs.get('tgt', 'jp')]
-        self.url = 'https://translate.google.cn/translate_a/single'
+        self.url = 'https://translate.google.cn/translate_a/single?%s'
         self.ip = self._get_host_ip()
         self.request_key = '%(name)s:requests' % {'name': self.name}
         self.error_key = '%(name)s:errors' % {'name': self.name}
@@ -98,7 +98,7 @@ class GGApiSpider(Spider):
                 line = self.server.rpop(self.request_key)
                 if not line:
                     data = self._get_params(lines)
-                    request = Request(self.url, method='GET', body=data, callback=self.parse_httpbin,
+                    request = Request(self.url % data, method='GET', body=data, callback=self.parse_httpbin,
                                       errback=self.errback_httpbin)
                     request.meta['lines'] = lines
                     yield request
@@ -107,8 +107,8 @@ class GGApiSpider(Spider):
                 lines = lines.strip()
             data = self._get_params(lines)
             print(data)
-            request = Request(self.url, method='GET', body=data, callback=self.parse_httpbin,
-                                      errback=self.errback_httpbin)
+            request = Request(self.url % data, method='GET', body=data, callback=self.parse_httpbin,
+                              errback=self.errback_httpbin)
             request.meta['lines'] = lines
             yield request
 
