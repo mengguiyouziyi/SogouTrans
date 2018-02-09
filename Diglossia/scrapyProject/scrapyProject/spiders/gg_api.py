@@ -98,7 +98,7 @@ class GGApiSpider(Spider):
                 line = self.server.rpop(self.request_key)
                 if not line:
                     data = self._get_params(lines)
-                    request = Request(self.url % data, method='GET', body=data, callback=self.parse_httpbin,
+                    request = Request(self.url % data, method='GET', callback=self.parse_httpbin,
                                       errback=self.errback_httpbin)
                     request.meta['lines'] = lines
                     yield request
@@ -106,7 +106,7 @@ class GGApiSpider(Spider):
                 lines += (line + '\n')
                 lines = lines.strip()
             data = self._get_params(lines)
-            request = Request(self.url % data, method='GET', body=data, callback=self.parse_httpbin,
+            request = Request(self.url % data, method='GET', callback=self.parse_httpbin,
                               errback=self.errback_httpbin)
             request.meta['lines'] = lines
             yield request
