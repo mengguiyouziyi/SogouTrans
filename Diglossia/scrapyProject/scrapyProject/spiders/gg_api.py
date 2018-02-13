@@ -126,19 +126,11 @@ class GGApiSpider(Spider):
 
     def start_requests(self):
         while 1:
-            lines = ''
+            lines = line = ''
             for i in range(1000):
                 line = self.server.rpop(self.request_key)
                 if not line:
-                    # lines = lines.strip()
-                    # url = self.url + self.js.getTk(lines)
-                    # request = FormRequest(url, method='POST', callback=self.parse_httpbin,
-                    #                       formdata={'q': lines},
-                    #                       headers={'User-Agent': random.choice(self.uas)},
-                    #                       errback=self.errback_httpbin)
-                    # request.meta['lines'] = lines
-                    # yield request
-                    raise CloseSpider('No datas, close spider...')
+                    break
                 lines += (line + '\n')
                 if len(lines) >= 4000:
                     break
@@ -149,6 +141,8 @@ class GGApiSpider(Spider):
                                   errback=self.errback_httpbin)
             request.meta['lines'] = lines
             yield request
+            if not line:
+                raise CloseSpider('No datas, close spider...')
 
     # def _get_params(self, lines):
     #     data = {"client": "t", "sl": self.src, "tl": self.tgt, "hl": "zh-CN",
