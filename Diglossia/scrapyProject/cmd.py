@@ -18,7 +18,7 @@ if __name__ == '__main__':
     spider_name = sys.argv[1]
     args = SPIDER_CONF.get(spider_name).get('args')
     cmd_list = ['scrapy', 'crawl', spider_name]
-
-    for k, v in args.items():
-        cmd_list.extend(['-a', k + '=' + v])
+    if args:
+        for k, v in args.items():
+            cmd_list.extend(['-a', k + '=' + v])
     execute(cmd_list)

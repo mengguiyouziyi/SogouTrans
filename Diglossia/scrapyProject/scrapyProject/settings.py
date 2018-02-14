@@ -146,14 +146,14 @@ MYSQL_USER = 'spider'  # 数据库账号，请修改
 MYSQL_PASSWD = 'chenguang'  # 数据库密码，请修改
 # MYSQL_PORT = 50112  # 数据库端口，在dbhelper中使用
 
-REDIS_CLUSTER_NODES = [
-    {"host": "10.142.97.92", "port": "7000"},
-    {"host": "10.142.97.92", "port": "7001"},
-    {"host": "10.142.97.92", "port": "7002"},
-    {"host": "10.142.97.92", "port": "7003"},
-    {"host": "10.142.97.92", "port": "7004"},
-    {"host": "10.142.97.92", "port": "7005"}
-]
+# REDIS_CLUSTER_NODES = [
+#     {"host": "10.142.97.92", "port": "7000"},
+#     {"host": "10.142.97.92", "port": "7001"},
+#     {"host": "10.142.97.92", "port": "7002"},
+#     {"host": "10.142.97.92", "port": "7003"},
+#     {"host": "10.142.97.92", "port": "7004"},
+#     {"host": "10.142.97.92", "port": "7005"}
+# ]
 
 TELNETCONSOLE_ENABLED = False
 
@@ -164,6 +164,9 @@ trans_api_col_comm = {'src': '源语言', 'srcType': '源语言种类', 'zh': '�
 brand_col_comm = {'brand_zh': '中文品牌名', 'brand_en': '英文品牌名', 'style': '品牌风格', 'comp_link': '公司官网',
                   'addr': '地址', 'brand_url': '品牌详情页url', 'categary': '行业类别', 'company': '公司', 'url': 'url',
                   'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
+sg_job_col_comm = {'title': '岗位名', 'job_cat1': '职位类别1', 'job_cat2': '职位类别2', 'city': '城市', 'experience': '工作经验',
+                   'employ_way': '招聘途径', 'num': '招聘人数', 'item_title': '项目名称', 'jd': '工作描述',
+                   'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
 # brand_col_comm = {'brand': '品牌名', 'brand_url': '品牌详情页url', 'categary': '行业类别',
 #                   'company': '公司', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
 col_d = {'col_comm': trans_api_col_comm, 'col_index_list': ['src']}
@@ -232,6 +235,9 @@ SPIDER_CONF = {
     'china_ef': {'in_file': '', 'args': {},
                  'col_comm': brand_col_comm,
                  'col_index_list': ['src'], 'tab_desc': 'china_ef品牌名称'},
+    # ----------------------------------------- sogou job ---------------------------------------------
+    'sg_job': {'in_file': '', 'args': {}, 'col_comm': sg_job_col_comm, 'col_index_list': ['title'],
+               'tab_desc': '搜狗job'},
 }
 LANG = {'yd': {'zh': 'zh-CHS', 'en': 'en', 'jp': 'ja', 'ko': 'ko', 'fr': 'fr', 'es': 'es', 'ru': 'ru'},
         'bi': {'zh': 'zh-CHS', 'en': 'en', 'jp': 'ja', 'ko': 'ko', 'fr': 'fr', 'es': 'es', 'ru': 'ru', 'de': 'de'},

@@ -146,13 +146,12 @@ class YDLijuSpider(Spider):
         line = response.meta.get('line')
         s = Selector(text=response.text)
         lis = s.xpath('//*[@class="ol"]/li')
+        if '当前分类下找不到' in response.text:
+            self.logger.error('No example sentence on %s', line)
+            return
         if len(lis.extract()) < 1:
-            if '当前分类下找不到' in response.text:
-                self.logger.error('No example sentence on %s', line)
-                self._lpush(self.error_key, line)
-            else:
-                self.logger.error('Error cause no example sentence on %s', line)
-                self._lpush(self.request_key, line)
+            self.logger.error('Error cause no example sentence on %s', line)
+            self._lpush(self.request_key, line)
             return
         for li in lis:
             sour = li.xpath('./p[1]//text()').extract()
@@ -205,25 +204,11 @@ class YDLijuSpider(Spider):
         return ip
 
 
-class YDLijuZhEsSpider(YDLijuSpider):
-    name = 'yd_liju_zh2es'
-
-    def __init__(self, *args, **kwargs):
-        super(YDLijuZhEsSpider, self).__init__(*args, **kwargs)
-
-
 class YDLijuZhFrSpider(YDLijuSpider):
     name = 'yd_liju_zh2fr'
 
     def __init__(self, *args, **kwargs):
         super(YDLijuZhFrSpider, self).__init__(*args, **kwargs)
-
-
-class YDLijuZhRuSpider(YDLijuSpider):
-    name = 'yd_liju_zh2ru'
-
-    def __init__(self, *args, **kwargs):
-        super(YDLijuZhRuSpider, self).__init__(*args, **kwargs)
 
 
 class YDLijuZhKoSpider(YDLijuSpider):
