@@ -147,9 +147,11 @@ class YDLijuSpider(Spider):
         s = Selector(text=response.text)
         lis = s.xpath('//*[@class="ol"]/li')
         if len(lis.extract()) < 1:
-            print(lis.extract())
             self.logger.error('No example sentence on %s', line)
-            self._lpush(self.error_key, line)
+            if '当前分类下找不到' in response.text:
+                self._lpush(self.error_key, line)
+            else:
+                self._lpush(self.request_key, line)
             return
         for li in lis:
             sour = li.xpath('./p[1]//text()').extract()

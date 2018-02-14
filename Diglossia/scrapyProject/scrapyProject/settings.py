@@ -205,8 +205,6 @@ SPIDER_CONF = {
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2jp'},
     # ----------------------------------------- yd ---------------------------------------------
     'yd_liju_zh2fr': dict({'args': {'src': 'zh', 'tgt': 'fr'}, 'tab_desc': '有道例句zh2fr'}, **vocab),
-    'yd_liju_zh2es': dict({'args': {'src': 'zh', 'tgt': 'es'}, 'tab_desc': '有道例句zh2es'}, **vocab),
-    'yd_liju_zh2ru': dict({'args': {'src': 'zh', 'tgt': 'ru'}, 'tab_desc': '有道例句zh2ru'}, **vocab),
     'yd_liju_zh2ko': dict({'args': {'src': 'zh', 'tgt': 'ko'}, 'tab_desc': '有道例句zh2ko'}, **vocab),
     'yd_liju_zh2jp': dict({'args': {'src': 'zh', 'tgt': 'jp'}, 'tab_desc': '有道例句zh2jp'}, **vocab),
     # ----------------------------------------- gg ---------------------------------------------

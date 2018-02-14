@@ -12,7 +12,7 @@ from scrapyProject import settings
 if __name__ == '__main__':
     host = '10.142.97.80'
     settings.REDIS_HOST = settings.MYSQL_HOST = host
-    spider_name = 'yd_liju_zh2fr'
+    spider_name = 'yd_liju_zh2es'
     args = SPIDER_CONF.get(spider_name).get('args')
     cmd_list = ['scrapy', 'crawl', spider_name]
 
