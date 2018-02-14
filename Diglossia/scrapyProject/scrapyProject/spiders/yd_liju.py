@@ -147,10 +147,11 @@ class YDLijuSpider(Spider):
         s = Selector(text=response.text)
         lis = s.xpath('//*[@class="ol"]/li')
         if len(lis.extract()) < 1:
-            self.logger.error('No example sentence on %s', line)
             if '当前分类下找不到' in response.text:
+                self.logger.error('No example sentence on %s', line)
                 self._lpush(self.error_key, line)
             else:
+                self.logger.error('Error cause no example sentence on %s', line)
                 self._lpush(self.request_key, line)
             return
         for li in lis:
