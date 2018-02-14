@@ -55,6 +55,7 @@ class YDLijuItem(Item):
 class YDLijuSpider(Spider):
     # name = 'yd_liju_zh2fr'
     items = []
+    # DEBUG INFO WARNING ERROR CRITICAL
     custom_settings = {
         'DEFAULT_REQUEST_HEADERS': {
             'accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -69,7 +70,9 @@ class YDLijuSpider(Spider):
             'cache-control': "no-cache",
             'postman-token': "b5e3aaf6-e291-55db-5c0e-01c0d36c3a2a"
         },
-        'DOWNLOAD_DELAY': 1
+        'DOWNLOAD_DELAY': 1,
+        'LOG_LEVEL': 'INFO'
+
     }
 
     def __init__(self, settings, *args, **kwargs):
@@ -85,7 +88,7 @@ class YDLijuSpider(Spider):
         self.ltgt = kwargs.get('tgt', '')
         self.src = lang_dict[self.lsrc]  # 各网站自己的语言标识
         self.tgt = lang_dict[self.ltgt]
-        self.url = 'http://dict.youdao.com/w/{tgt}/lj{word}/'
+        self.url = 'http://dict.youdao.com/w/{tgt}/lj%3A{word}/'
         self.ip = self._get_host_ip()
         self.cookie = self._get_cookie()
         self.request_key = '%(name)s:requests' % {'name': self.name}
@@ -143,6 +146,7 @@ class YDLijuSpider(Spider):
         s = Selector(text=response.text)
         lis = s.xpath('//*[@class="ol"]/li')
         if len(lis.extract()) < 1:
+            print(lis.extract())
             self.logger.error('No example sentence on %s', line)
             self._lpush(self.error_key, line)
             return
