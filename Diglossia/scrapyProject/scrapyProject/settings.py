@@ -167,9 +167,10 @@ brand_col_comm = {'brand_zh': '中文品牌名', 'brand_en': '英文品牌名', 
 # brand_col_comm = {'brand': '品牌名', 'brand_url': '品牌详情页url', 'categary': '行业类别',
 #                   'company': '公司', 'url': 'url', 'project': '工程名', 'spider': '爬虫名', 'server': 'ip'}
 col_d = {'col_comm': trans_api_col_comm, 'col_index_list': ['src']}
-news1617 = oral800w = col_d.copy()
+news1617 = oral800w = vocab = col_d.copy()
 news1617 = news1617.update({'in_file': 'news1617.zh'}) or news1617
 oral800w = oral800w.update({'in_file': 'oral800w.zh'}) or oral800w
+vocab = vocab.update({'in_file': 'vocab.src'}) or vocab
 SPIDER_CONF = {
     # ----------------------------------------- yd ---------------------------------------------
     'yd_news_zh2es': {'in_file': 'news1617.zh', 'args': {'src': 'zh', 'tgt': 'es'},
@@ -202,6 +203,12 @@ SPIDER_CONF = {
     'yd_oral_zh2jp': {'in_file': 'oral800w.zh', 'args': {'src': 'zh', 'tgt': 'jp'},
                       'col_comm': trans_api_col_comm,
                       'col_index_list': ['src'], 'tab_desc': '有道api口语zh2jp'},
+    # ----------------------------------------- yd ---------------------------------------------
+    'yd_liju_zh2fr': dict({'args': {'src': 'zh', 'tgt': 'fr'}, 'tab_desc': '有道例句zh2fr'}, **vocab),
+    'yd_liju_zh2es': dict({'args': {'src': 'zh', 'tgt': 'es'}, 'tab_desc': '有道例句zh2es'}, **vocab),
+    'yd_liju_zh2ru': dict({'args': {'src': 'zh', 'tgt': 'ru'}, 'tab_desc': '有道例句zh2ru'}, **vocab),
+    'yd_liju_zh2ko': dict({'args': {'src': 'zh', 'tgt': 'ko'}, 'tab_desc': '有道例句zh2ko'}, **vocab),
+    'yd_liju_zh2jp': dict({'args': {'src': 'zh', 'tgt': 'jp'}, 'tab_desc': '有道例句zh2jp'}, **vocab),
     # ----------------------------------------- gg ---------------------------------------------
     'gg_news_zh2es': dict({'args': {'src': 'zh', 'tgt': 'es'}, 'tab_desc': '谷歌api新闻zh2es'}, **news1617),
     'gg_news_zh2fr': dict({'args': {'src': 'zh', 'tgt': 'fr'}, 'tab_desc': '谷歌api新闻zh2fr'}, **news1617),
