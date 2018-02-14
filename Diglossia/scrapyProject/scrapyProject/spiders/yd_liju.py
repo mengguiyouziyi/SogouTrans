@@ -70,7 +70,7 @@ class YDLijuSpider(Spider):
             'cache-control': "no-cache",
             'postman-token': "b5e3aaf6-e291-55db-5c0e-01c0d36c3a2a"
         },
-        'DOWNLOAD_DELAY': 1,
+        'DOWNLOAD_DELAY': 3,
         'LOG_LEVEL': 'INFO'
 
     }
@@ -129,7 +129,8 @@ class YDLijuSpider(Spider):
             if not line:
                 raise CloseSpider('No datas, close spider...')
             yield Request(self.url.format(tgt=self.tgt, word=line), callback=self.parse_httpbin,
-                          headers={'User-Agent': random.choice(self.uas)}, meta={'line': line}, cookies=self.cookie)
+                          headers={'User-Agent': random.choice(self.uas)}, meta={'line': line}, cookies=self.cookie,
+                          errback=self.errback_httpbin)
 
     def _lpush(self, key, l):
         if len(l) > 1:
