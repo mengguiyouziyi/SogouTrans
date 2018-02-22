@@ -128,9 +128,10 @@ class YDLijuSpider(Spider):
             line = self.server.rpop(self.request_key)
             if not line:
                 raise CloseSpider('No datas, close spider...')
-            yield Request(self.url.format(tgt=self.tgt, word=line), callback=self.parse_httpbin,
-                          headers={'User-Agent': random.choice(self.uas)}, meta={'line': line}, cookies=self.cookie,
-                          errback=self.errback_httpbin)
+            else:
+                yield Request(self.url.format(tgt=self.tgt, word=line), callback=self.parse_httpbin,
+                              headers={'User-Agent': random.choice(self.uas)}, meta={'line': line}, cookies=self.cookie,
+                              errback=self.errback_httpbin)
 
     def _lpush(self, key, l):
         if len(l) > 1:
@@ -147,7 +148,7 @@ class YDLijuSpider(Spider):
         s = Selector(text=response.text)
         lis = s.xpath('//*[@class="ol"]/li')
         if '当前分类下找不到' in response.text:
-            self.logger.error('No example sentence on %s', line)
+            self.logger.info('No example sentence on %s', line)
             return
         if len(lis.extract()) < 1:
             self.logger.error('Error cause no example sentence on %s', line)
