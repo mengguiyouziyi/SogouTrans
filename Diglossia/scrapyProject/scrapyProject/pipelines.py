@@ -15,6 +15,45 @@ sys.path.append(path)
 sys.path.append(base_path)
 sys.path.append(father_path)
 import pymysql
+import hashlib
+from redis import StrictRedis
+from scrapy.exceptions import DropItem
+
+
+class DuplicatesPipeline(object):
+    def __init__(self, redisparams, spider):
+        self.redisconn = StrictRedis(**redisparams)
+        self.filter_key = '%(name)s:filter' % {'name': spider.name}
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        redisparams = dict(
+            host=crawler.settings['REDIS_HOST'],
+            port=crawler.settings['REDIS_HOST'],
+            decode_responses=True
+        )
+        return cls(redisparams, crawler.spider)
+
+    def process_item(self, item, spider):
+        col_list = spider.col_list[1:-1]
+        m = self.gen_md5(item[col_list[0]])
+        if self.redisconn.sismember(self.filter_key, m):
+            raise DropItem("Duplicate item found")
+        else:
+            self.redisconn.sadd(m)
+            return item
+
+    def gen_md5(self, comp_name):
+        """
+        生成唯一id
+        :return:
+        """
+        m = hashlib.md5()
+        m.update(comp_name.encode('utf-8'))
+        comp_md5 = m.hexdigest()
+        # only_id_full = int(comp_md5, 16)
+        # return str(only_id_full)
+        return comp_md5
 
 
 class MysqlPipeline(object):

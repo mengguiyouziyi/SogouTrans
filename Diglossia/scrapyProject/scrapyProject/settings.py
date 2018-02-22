@@ -131,7 +131,7 @@ DOWNLOADER_MIDDLEWARES = {
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'scrapyProject.pipelines.MysqlPipeline': 999,
-    # 'scrapyProject.pipelines.DuplicatesPipeline': 111,
+    'scrapyProject.pipelines.DuplicatesPipeline': 111,
 }
 
 # Mysql数据库的配置信息
