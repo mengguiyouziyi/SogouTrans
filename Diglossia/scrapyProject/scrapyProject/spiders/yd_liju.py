@@ -18,7 +18,7 @@ from redis import StrictRedis
 from scrapy import Request
 from scrapy.spiders import Spider
 from scrapy.selector import Selector
-from scrapy.exceptions import CloseSpider
+# from scrapy.exceptions import CloseSpider
 from scrapy.item import Item, Field
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError
@@ -127,7 +127,9 @@ class YDLijuSpider(Spider):
         while 1:
             line = self.server.rpop(self.request_key)
             if not line:
-                raise CloseSpider('No datas, close spider...')
+                self.logger.info('No datas, close spider...')
+                return
+                # raise CloseSpider('No datas, close spider...')
             else:
                 yield Request(self.url.format(tgt=self.tgt, word=line), callback=self.parse_httpbin,
                               headers={'User-Agent': random.choice(self.uas)}, meta={'line': line}, cookies=self.cookie,
