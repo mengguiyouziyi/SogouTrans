@@ -66,6 +66,8 @@ RETRY_HTTP_CODES = [500, 502, 503, 504, 408, 429]
 
 DOWNLOAD_TIMEOUT = 60
 
+LOG_FORMATTER = 'scrapyProject.logformat.PoliteLogFormatter'
+
 USER_AGENT_CHOICES = [
     'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0_3 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Mobile/15A432',
     'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50',

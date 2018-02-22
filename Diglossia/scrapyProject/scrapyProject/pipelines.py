@@ -29,7 +29,7 @@ class DuplicatesPipeline(object):
     def from_crawler(cls, crawler):
         redisparams = dict(
             host=crawler.settings['REDIS_HOST'],
-            port=crawler.settings['REDIS_HOST'],
+            port=crawler.settings['REDIS_PORT'],
             decode_responses=True
         )
         return cls(redisparams, crawler.spider)
@@ -40,7 +40,7 @@ class DuplicatesPipeline(object):
         if self.redisconn.sismember(self.filter_key, m):
             raise DropItem("Duplicate item found")
         else:
-            self.redisconn.sadd(m)
+            self.redisconn.sadd(self.filter_key, m)
             return item
 
     def gen_md5(self, comp_name):
@@ -77,7 +77,7 @@ class MysqlPipeline(object):
         )
         redisparams = dict(
             host=crawler.settings['REDIS_HOST'],
-            port=crawler.settings['REDIS_HOST'],
+            port=crawler.settings['REDIS_PORT'],
             decode_responses=True
         )
         return cls(dbparams, redisparams)
@@ -134,7 +134,7 @@ class MysqlPipeline(object):
         in_args = [item[i] for i in col_list]
         # spider.logger.info(item[col_list[0]])
         l = len(spider.items)
-        if l >= 500:
+        if l >= 5:
             self._in_func(spider)
             spider.items.clear()
         else:

@@ -150,20 +150,25 @@ class YDLijuSpider(Spider):
         if '当前分类下找不到' in response.text:
             self.logger.info('No example sentence on %s', line)
             return
-        if len(lis.extract()) < 1:
-            self.logger.error('Error cause no example sentence on %s', line)
-            self._lpush(self.request_key, line)
-            return
+        # if len(lis.extract()) < 1:
+        #     self.logger.error('Error cause no example sentence on %s', line)
+        #     self._lpush(self.request_key, line)
+        #     return
         for li in lis:
             sour = li.xpath('./p[1]//text()').extract()
             sour = ''.join(sour).strip()
-            tran = li.xpath('./p[2]/text()').extract_first().strip()
+            tran = li.xpath('./p[2]//text()').extract()
+            tran = ''.join(tran).strip()
+            if tran == '':
+                self.logger.error('empty on %s', line)
+                self._lpush(self.request_key, line)
+                return
             item = YDLijuItem()
             item.update(self.d)
             item['src'] = sour
             item['srcType'] = self.lsrc  # 源语言类型
             item[self.ltgt] = tran
-            # item['url'] = response.url
+            item['url'] = response.url
             # item['project'] = self.settings.get('BOT_NAME')
             # item['spider'] = self.name
             item['server'] = self.ip
